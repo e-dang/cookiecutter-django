@@ -26,3 +26,7 @@ test-local:
 test-prod:
 	@cd $(PROJECT_DIR) && \
 	$(PRODUCTION) $(RUN) pytest
+
+coverage:
+	@cd $(PROJECT_DIR) && \
+	$(LOCAL) $(RUN) /bin/bash -c "coverage run -m pytest && coverage report -m"
