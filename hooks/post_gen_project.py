@@ -99,7 +99,11 @@ def remove_celery_files():
         os.path.join("config", "celery_app.py"),
         os.path.join("{{ cookiecutter.project_slug }}", "users", "tasks.py"),
         os.path.join(
-            "{{ cookiecutter.project_slug }}", "users", "tests", "test_tasks.py"
+            "{{ cookiecutter.project_slug }}",
+            "tests",
+            "integration",
+            "users",
+            "test_tasks.py",
         ),
     ]
     for file_name in file_names:
@@ -310,12 +314,20 @@ def remove_drf_starter_files():
     shutil.rmtree(os.path.join("{{cookiecutter.project_slug}}", "users", "api"))
     os.remove(
         os.path.join(
-            "{{cookiecutter.project_slug}}", "users", "tests", "test_drf_urls.py"
+            "{{cookiecutter.project_slug}}",
+            "tests",
+            "unit",
+            "users",
+            "test_drf_urls.py",
         )
     )
     os.remove(
         os.path.join(
-            "{{cookiecutter.project_slug}}", "users", "tests", "test_drf_views.py"
+            "{{cookiecutter.project_slug}}",
+            "tests",
+            "integration",
+            "users",
+            "test_drf_views.py",
         )
     )
 
@@ -324,7 +336,11 @@ def remove_custom_user_manager_file():
     os.remove(os.path.join("{{cookiecutter.project_slug}}", "users", "managers.py"))
     os.remove(
         os.path.join(
-            "{{cookiecutter.project_slug}}", "users", "tests", "test_managers.py"
+            "{{cookiecutter.project_slug}}",
+            "tests",
+            "unit",
+            "users",
+            "test_managers.py",
         )
     )
 

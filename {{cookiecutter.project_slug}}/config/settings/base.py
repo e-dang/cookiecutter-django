@@ -337,10 +337,10 @@ REST_FRAMEWORK = {
 # -------------------------------------------------------------------------------
 {% if cookiecutter.user.username_field == "email" %}
 REST_AUTH_SERIALIZERS = {
-    "LOGIN_SERIALIZER": "proj.users.api.serializers.LoginSerializer",
+    "LOGIN_SERIALIZER": "{{cookiecutter.project_slug}}.users.api.serializers.LoginSerializer",
 }
 REST_AUTH_REGISTER_SERIALIZERS = {
-    "REGISTER_SERIALIZER": "proj.users.api.serializers.RegisterSerializer",
+    "REGISTER_SERIALIZER": "{{cookiecutter.project_slug}}.users.api.serializers.RegisterSerializer",
 }
 {% endif %}
 OLD_PASSWORD_FIELD_ENABLED = True
