@@ -7,12 +7,12 @@ env:
 
 on:
   pull_request:
-    branches: [ "master", "main" ]
-    paths-ignore: [ "docs/**" ]
+    branches: [ "main" ]
+    paths-ignore: [ "README.md", "LICENSE", "docs/**" ]
 
   push:
-    branches: [ "master", "main" ]
-    paths-ignore: [ "docs/**" ]
+    branches: [ "main" ]
+    paths-ignore: [ "README.md", "LICENSE", "docs/**" ]
 
 
 jobs:
@@ -31,10 +31,9 @@ jobs:
       # Run all pre-commit hooks on all the files.
       # Getting only staged files can be tricky in case a new PR is opened
       # since the action is run on a branch in detached head state
-      - name: Install and Run Pre-commit 
+      - name: Install and Run Pre-commit
         uses: pre-commit/action@v2.0.0
 
-  # With no caching at all the entire ci process takes 4m 30s to complete!
   pytest:
     runs-on: ubuntu-latest
     {%- if cookiecutter.use_docker == 'n' %}
