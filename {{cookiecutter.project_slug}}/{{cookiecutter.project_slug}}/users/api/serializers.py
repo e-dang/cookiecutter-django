@@ -28,7 +28,7 @@ class LoginSerializer(RestAuthLoginSerializer):
 
 class RegisterSerializer(RestAuthRegisterSerializer):
     username = None
-    name = serializers.CharField()
+    name = serializers.CharField(required=False)
 
     def get_cleaned_data(self):
         return {
