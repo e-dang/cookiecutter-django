@@ -13,7 +13,9 @@ class UserChangeForm(admin_forms.UserChangeForm):
 class UserCreationForm(admin_forms.UserCreationForm):
     class Meta(admin_forms.UserCreationForm.Meta):
         model = User
-
+        {% if cookiecutter.user.username_field == "email" -%}
+        fields = ["email", "name", "password1", "password2"]
+        {% endif -%}
         error_messages = {
-            "username": {"unique": _("This username has already been taken.")}
+            "{{cookiecutter.user.username_field}}": {"unique": _("This {{cookiecutter.user.username_field}} has already been taken.")}
         }

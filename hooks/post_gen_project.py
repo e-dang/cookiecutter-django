@@ -320,6 +320,26 @@ def remove_drf_starter_files():
     )
 
 
+def remove_custom_user_manager_file():
+    os.remove(os.path.join("{{cookiecutter.project_slug}}", "users", "managers.py"))
+    os.remove(
+        os.path.join(
+            "{{cookiecutter.project_slug}}", "users", "tests", "test_managers.py"
+        )
+    )
+
+
+def remove_migration_file():
+    os.remove(
+        os.path.join(
+            "{{cookiecutter.project_slug}}",
+            "users",
+            "migrations",
+            "0002_remove_username.py",
+        )
+    )
+
+
 def remove_storages_module():
     os.remove(os.path.join("{{cookiecutter.project_slug}}", "utils", "storages.py"))
 
@@ -404,6 +424,10 @@ def main():
 
     if "{{ cookiecutter.use_drf }}".lower() == "n":
         remove_drf_starter_files()
+
+    if "{{ cookiecutter.user.username_field }}".lower() == "username":
+        remove_custom_user_manager_file()
+        remove_migration_file()
 
     if "{{ cookiecutter.use_async }}".lower() == "n":
         remove_async_files()

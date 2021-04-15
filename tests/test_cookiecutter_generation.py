@@ -75,8 +75,10 @@ SUPPORTED_COMBINATIONS = [
     # Note: cloud_providers GCP and None with mail_service Amazon SES is not supported
     {"use_async": "y"},
     {"use_async": "n"},
-    {"use_drf": "y"},
-    {"use_drf": "n"},
+    {"use_drf": "y", "user": {"username_field": "username", "slug_field": "username"}},
+    {"use_drf": "y", "user": {"username_field": "email", "slug_field": "uuid"}},
+    {"use_drf": "n", "user": {"username_field": "username", "slug_field": "username"}},
+    {"use_drf": "n", "user": {"username_field": "email", "slug_field": "uuid"}},
     {"js_task_runner": "None"},
     {"js_task_runner": "Gulp"},
     {"custom_bootstrap_compilation": "y"},

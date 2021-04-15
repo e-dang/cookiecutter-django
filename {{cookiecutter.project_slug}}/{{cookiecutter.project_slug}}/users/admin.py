@@ -14,7 +14,11 @@ class UserAdmin(auth_admin.UserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
     fieldsets = (
-        (None, {"fields": ("username", "password")}),
+        {% if cookiecutter.user.username_field == "username" -%}
+        (None, {"fields": ("{{cookiecutter.user.slug_field}}", "password")}),
+        {% else -%}
+        (None, {"fields": ("password",)}),
+        {% endif -%}
         (_("Personal info"), {"fields": ("name", "email")}),
         (
             _("Permissions"),
@@ -30,5 +34,17 @@ class UserAdmin(auth_admin.UserAdmin):
         ),
         (_("Important dates"), {"fields": ("last_login", "date_joined")}),
     )
-    list_display = ["username", "name", "is_superuser"]
-    search_fields = ["name"]
+    {% if cookiecutter.user.username_field == "email" -%}
+    add_fieldsets = (
+        (
+            None,
+            {
+                "classes": ("wide",),
+                "fields": ("email", "password1", "password2"),
+            },
+        ),
+    )
+    {% endif -%}
+    list_display = ["{{cookiecutter.user.username_field}}", "name",{% if cookiecutter.user.slug_field == "uuid" %} "uuid",{% endif %} "is_superuser"]
+    search_fields = ["{{cookiecutter.user.username_field}}", "name"]
+    ordering = ["{{cookiecutter.user.username_field}}"]

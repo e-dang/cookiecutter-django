@@ -8,10 +8,10 @@ pytestmark = pytest.mark.django_db
 
 def test_user_detail(user: User):
     assert (
-        reverse("api:user-detail", kwargs={"username": user.username})
-        == f"/api/users/{user.username}/"
+        reverse("api:user-detail", kwargs={"{{cookiecutter.user.slug_field}}": user.{{cookiecutter.user.slug_field}}})
+        == f"/api/users/{user.{{cookiecutter.user.slug_field}}}/"
     )
-    assert resolve(f"/api/users/{user.username}/").view_name == "api:user-detail"
+    assert resolve(f"/api/users/{user.{{cookiecutter.user.slug_field}}}/").view_name == "api:user-detail"
 
 
 def test_user_list():

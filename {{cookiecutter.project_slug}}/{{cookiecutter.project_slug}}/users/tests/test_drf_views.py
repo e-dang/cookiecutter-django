@@ -27,7 +27,7 @@ class TestUserViewSet:
         response = view.me(request)
 
         assert response.data == {
-            "username": user.username,
+            "{{cookiecutter.user.username_field}}": user.{{cookiecutter.user.username_field}},
             "name": user.name,
-            "url": f"http://testserver/api/users/{user.username}/",
+            "url": f"http://testserver/api/users/{user.{{cookiecutter.user.slug_field}}}/",
         }
