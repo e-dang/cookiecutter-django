@@ -1,4 +1,4 @@
-{{cookiecutter.project_name}} {{ '=' * cookiecutter.project_name|length }}
+{{cookiecutter.project_name}}
 
 {{cookiecutter.description}}
 
@@ -44,6 +44,16 @@ To run the tests, check your test coverage, and generate an HTML coverage report
 
     $ pytest
 
+## Formatting Checks
+
+### Install
+
+    $ git init
+    $ pre-commit install
+
+### Run
+
+    $ pre-commit run
 ## Live reloading and Sass CSS compilation
 
 Moved to [Live reloading and SASS compilation](http://cookiecutter-django.readthedocs.io/en/latest/live-reloading-and-sass-compilation.html).
