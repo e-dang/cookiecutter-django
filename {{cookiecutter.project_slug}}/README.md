@@ -1,13 +1,13 @@
-{{cookiecutter.project\_name}} {{ '=' \* cookiecutter.project\_name|length }}
+{{cookiecutter.project_name}} {{ '=' * cookiecutter.project_name|length }}
 
 {{cookiecutter.description}}
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-{%- if cookiecutter.open\_source\_license != "Not open source" %}
+{%- if cookiecutter.open_source_license != "Not open source" %}
 
 License
-{{cookiecutter.open\_source\_license}}
+{{cookiecutter.open_source_license}}
 
 {%- endif %}
 
@@ -48,7 +48,7 @@ To run the tests, check your test coverage, and generate an HTML coverage report
 
 Moved to [Live reloading and SASS compilation](http://cookiecutter-django.readthedocs.io/en/latest/live-reloading-and-sass-compilation.html).
 
-{%- if cookiecutter.use\_celery == "y" %}
+{%- if cookiecutter.use_celery == "y" %}
 
 ## Celery
 
@@ -63,11 +63,11 @@ celery -A config.celery_app worker -l info
 
 Please note: For Celery's import magic to work, it is important _where_ the celery commands are run. If you are in the same folder with _manage.py_, you should be right.
 
-{%- endif %} {%- if cookiecutter.use\_mailhog == "y" %}
+{%- endif %} {%- if cookiecutter.use_mailhog == "y" %}
 
 ## Email Server
 
-{%- if cookiecutter.use\_docker == 'y' %}
+{%- if cookiecutter.use_docker == 'y' %}
 
 In development, it is often nice to be able to see emails that are being sent from your application. For that reason local SMTP server MailHog\_ with a web interface is available as docker container.
 
@@ -92,7 +92,7 @@ In development, it is often nice to be able to see emails that are being sent fr
 
 Now you have your own mail server running locally, ready to receive whatever you send it.
 
-{%- endif %} .. \_mailhog: <https://github.com/mailhog/MailHog> {%- endif %} {%- if cookiecutter.use\_sentry == "y" %}
+{%- endif %} .. _mailhog: <https://github.com/mailhog/MailHog> {%- endif %} {%- if cookiecutter.use_sentry == "y" %}
 
 ## Sentry
 
@@ -102,24 +102,24 @@ You must set the DSN url in production. {%- endif %}
 
 # Deployment
 
-The following details how to deploy this application. {%- if cookiecutter.use\_heroku.lower() == "y" %}
+The following details how to deploy this application. {%- if cookiecutter.use_heroku.lower() == "y" %}
 
 ## Heroku
 
 See detailed [cookiecutter-django Heroku documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-on-heroku.html).
 
-{%- endif %} {%- if cookiecutter.use\_docker.lower() == "y" %}
+{%- endif %} {%- if cookiecutter.use_docker.lower() == "y" %}
 
 ## Docker
 
 See detailed [cookiecutter-django Docker documentation](http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html).
 
-{%- endif %} {%- if cookiecutter.custom\_bootstrap\_compilation == "y" %} Custom Bootstrap Compilation \^\^\^\^\^\^
+{%- endif %} {%- if cookiecutter.custom_bootstrap_compilation == "y" %} Custom Bootstrap Compilation \^\^\^\^\^\^
 
 The generated CSS is set up with automatic Bootstrap recompilation with variables of your choice. Bootstrap v4 is installed using npm and customised by tweaking your variables in `static/sass/custom_bootstrap_vars`.
 
 You can find a list of available variables [in the bootstrap source](https://github.com/twbs/bootstrap/blob/v4-dev/scss/_variables.scss), or get explanations on them in the [Bootstrap docs](https://getbootstrap.com/docs/4.1/getting-started/theming/).
 
-{%- if cookiecutter.js\_task\_runner == 'Gulp' %} Bootstrap's javascript as well as its dependencies is concatenated into a single file: `static/js/vendors.js`. {%- endif %}
+{%- if cookiecutter.js_task_runner == 'Gulp' %} Bootstrap's javascript as well as its dependencies is concatenated into a single file: `static/js/vendors.js`. {%- endif %}
 
 {%- endif %}
