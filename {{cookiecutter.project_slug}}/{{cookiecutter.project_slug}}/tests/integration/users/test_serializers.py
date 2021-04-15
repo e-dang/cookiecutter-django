@@ -2,6 +2,7 @@ from typing import Dict
 
 import pytest
 
+from my_awesome_project.tests.assertions import assert_field_error
 from my_awesome_project.users.api.serializers import RegisterSerializer
 
 pytestmark = pytest.mark.django_db
@@ -50,6 +51,4 @@ class TestRegisterSerializer:
         user_json.pop(field)
         serializer = RegisterSerializer(data=user_json)
 
-        assert not serializer.is_valid()
-        assert field in serializer.errors
-        assert serializer.errors[field][0].code == "required"
+        assert_field_error(serializer, field)

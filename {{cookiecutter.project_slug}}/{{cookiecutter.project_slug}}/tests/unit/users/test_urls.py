@@ -1,24 +1,15 @@
-import pytest
-from django.urls import resolve, reverse
-
-from {{ cookiecutter.project_slug }}.users.models import User
-
-pytestmark = pytest.mark.django_db
+from {{ cookiecutter.project_slug }}.tests.assertions import assert_correct_url
+from {{ cookiecutter.project_slug }}.tests.factories import UserFactory
 
 
-def test_detail(user: User):
-    assert (
-        reverse("users:detail", kwargs={"{{cookiecutter.user.slug_field}}": user.{{cookiecutter.user.slug_field}}})
-        == f"/users/{user.{{cookiecutter.user.slug_field}}}/"
-    )
-    assert resolve(f"/users/{user.{{cookiecutter.user.slug_field}}}/").view_name == "users:detail"
+def test_detail(user_factory: UserFactory):
+    kwargs = {"uuid": user_factory.build().uuid}
+    assert_correct_url("users:detail", "/users/{uuid}/", kwargs)
 
 
 def test_update():
-    assert reverse("users:update") == "/users/~update/"
-    assert resolve("/users/~update/").view_name == "users:update"
+    assert_correct_url("users:update", "/users/~update/")
 
 
 def test_redirect():
-    assert reverse("users:redirect") == "/users/~redirect/"
-    assert resolve("/users/~redirect/").view_name == "users:redirect"
+    assert_correct_url("users:redirect", "/users/~redirect/")
