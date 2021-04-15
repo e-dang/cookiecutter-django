@@ -330,6 +330,15 @@ def remove_drf_starter_files():
             "test_drf_views.py",
         )
     )
+    os.remove(
+        os.path.join(
+            "{{cookiecutter.project_slug}}",
+            "tests",
+            "integration",
+            "users",
+            "test_serializers.py",
+        )
+    )
 
 
 def remove_custom_user_manager_file():
