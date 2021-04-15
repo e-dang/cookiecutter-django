@@ -80,6 +80,8 @@ THIRD_PARTY_APPS = [
 {%- if cookiecutter.use_drf == "y" %}
     "rest_framework",
     "rest_framework.authtoken",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
     "corsheaders",
 {%- endif %}
 ]
@@ -331,6 +333,18 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }
+# dj-rest-auth - https://dj-rest-auth.readthedocs.io/en/latest/configuration.html
+# -------------------------------------------------------------------------------
+{% if cookiecutter.user.username_field == "email" %}
+REST_AUTH_SERIALIZERS = {
+    "LOGIN_SERIALIZER": "proj.users.api.serializers.LoginSerializer",
+}
+REST_AUTH_REGISTER_SERIALIZERS = {
+    "REGISTER_SERIALIZER": "proj.users.api.serializers.RegisterSerializer",
+}
+{% endif %}
+OLD_PASSWORD_FIELD_ENABLED = True
+LOGOUT_ON_PASSWORD_CHANGE = False
 
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
 CORS_URLS_REGEX = r"^/api/.*$"
