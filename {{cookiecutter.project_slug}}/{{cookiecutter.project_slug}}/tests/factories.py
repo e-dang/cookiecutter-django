@@ -61,7 +61,10 @@ class UserFactory(DjangoModelFactory, JsonFactoryMixin):
                 lower_case=True,
             ).evaluate(None, None, extra={"locale": None})
         )
-        self.set_password(password)
+        try:
+            self.set_password(password)
+        except AttributeError:
+            self.password = password
 
     class Meta:
         model = get_user_model()
