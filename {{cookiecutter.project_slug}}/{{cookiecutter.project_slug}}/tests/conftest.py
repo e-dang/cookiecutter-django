@@ -1,6 +1,6 @@
 import pytest
+from pytest_factoryboy import register
 
-from {{ cookiecutter.project_slug }}.users.models import User
 from {{ cookiecutter.project_slug }}.tests.factories import UserFactory
 
 
@@ -9,6 +9,4 @@ def media_storage(settings, tmpdir):
     settings.MEDIA_ROOT = tmpdir.strpath
 
 
-@pytest.fixture
-def user() -> User:
-    return UserFactory()
+register(UserFactory)
