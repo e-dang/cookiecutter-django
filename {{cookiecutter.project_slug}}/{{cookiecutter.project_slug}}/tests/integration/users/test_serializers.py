@@ -2,8 +2,8 @@ from typing import Dict
 
 import pytest
 
-from my_awesome_project.tests.assertions import assert_field_error
-from my_awesome_project.users.api.serializers import RegisterSerializer
+from {{cookiecutter.project_slug}}.tests.assertions import assert_field_error
+from {{cookiecutter.project_slug}}.users.api.serializers import RegisterSerializer
 
 pytestmark = pytest.mark.django_db
 
