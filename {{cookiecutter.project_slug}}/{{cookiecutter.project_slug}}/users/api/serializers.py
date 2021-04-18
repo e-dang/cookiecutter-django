@@ -36,4 +36,9 @@ class RegisterSerializer(RestAuthRegisterSerializer):
             "password1": self.validated_data.get("password1", ""),
             "email": self.validated_data.get("email", ""),
         }
+
+    def custom_signup(self, request, user):
+        cleaned_data = self.get_cleaned_data()
+        user.name = cleaned_data["name"]
+        user.save()
 {% endif %}
