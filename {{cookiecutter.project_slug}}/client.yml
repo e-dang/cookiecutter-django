@@ -2,12 +2,12 @@ version: '3'
 
 services:
   hub:
-    image: selenium/hub
+    image: selenium/hub:latest
     ports:
       - 4444:4444
 
   chrome:
-    image: selenium/node-chrome-debug
+    image: selenium/node-chrome-debug:latest
     depends_on:
       - hub
     environment:
@@ -16,7 +16,7 @@ services:
       - 7901:5900
 
   firefox:
-    image: selenium/node-firefox-debug
+    image: selenium/node-firefox-debug:latest
     depends_on:
       - hub
     environment:
