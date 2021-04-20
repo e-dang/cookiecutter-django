@@ -55,8 +55,16 @@ def remove_pycharm_files():
 
 def remove_docker_files():
     shutil.rmtree("compose")
+    shutil.rmtree(".envs/.client")
 
-    file_names = ["local.yml", "production.yml", ".dockerignore", "Makefile"]
+    file_names = [
+        "local.yml",
+        "production.yml",
+        ".dockerignore",
+        "Makefile",
+        "client.yml",
+        "config/settings/client.py",
+    ]
     for file_name in file_names:
         os.remove(file_name)
 
@@ -389,6 +397,7 @@ def main():
 
     if "{{ cookiecutter.use_docker }}".lower() == "y":
         remove_utility_files()
+        append_to_gitignore_file("!.envs/.client/")
     else:
         remove_docker_files()
 

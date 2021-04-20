@@ -1,0 +1,46 @@
+version: '3'
+
+services:
+  hub:
+    image: selenium/hub
+    ports:
+      - 4444:4444
+
+  chrome:
+    image: selenium/node-chrome-debug
+    depends_on:
+      - hub
+    environment:
+      - HUB_HOST=hub
+    ports:
+      - 7901:5900
+
+  firefox:
+    image: selenium/node-firefox-debug
+    depends_on:
+      - hub
+    environment:
+      - HUB_HOST=hub
+    ports:
+      - 7900:5900
+
+  client:
+    build:
+      context: .
+      dockerfile: ./compose/local/django/Dockerfile
+    image: {{ cookiecutter.project_slug }}_local_django
+    container_name: client
+    volumes:
+      - .:/app:z
+    env_file:
+      - ./.envs/.local/.django
+      - ./.envs/.client/.client
+    depends_on:
+      - chrome
+      - firefox
+    entrypoint: pytest --ds=config.settings.client -m functional
+
+networks:
+  default:
+    external:
+      name: {{ cookiecutter.project_slug | replace("_", "-") }}_default
