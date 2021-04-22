@@ -9,6 +9,7 @@ from rest_framework import status
 from rest_framework.reverse import reverse
 from rest_framework.test import APIClient, APIRequestFactory
 
+from {{ cookiecutter.project_slug }}.tests.assertions import assert_json_contains_model_instance_data
 from {{ cookiecutter.project_slug }}.tests.factories import UserFactory
 from {{ cookiecutter.project_slug }}.users.api.views import UserViewSet
 from {{ cookiecutter.project_slug }}.users.models import User
@@ -57,20 +58,38 @@ class TestUserViewSet:
 
         assert user in view.get_queryset()
 
-    def test_me(self, user: User, rf: RequestFactory):
-        view = UserViewSet()
-        request = rf.get("/fake-url/")
-        request.user = user
 
-        view.request = request
+class TestUserView:
+    @pytest.fixture(autouse=True)
+    def setup(self, auth_client: APIClient) -> None:
+        self.api_client = auth_client
+        self.url = reverse("api:rest_user_details")
 
-        response = view.me(request)
+    def test_GET_returns_the_user_info_of_currently_logged_in_user(self, auth_user: User) -> None:
+        response = self.api_client.get(self.url)
 
-        assert response.data == {
-            "{{cookiecutter.user.username_field}}": user.{{cookiecutter.user.username_field}},
-            "name": user.name,
-            "url": f"http://testserver/api/users/{user.{{cookiecutter.user.slug_field}}}/",
-        }
+        assert response.status_code == status.HTTP_200_OK
+        data = response.data
+        data.pop("url")
+        assert_json_contains_model_instance_data(data, auth_user)
+
+    def test_PUT_updates_user_info_of_currently_logged_in_user(self, auth_user: User) -> None:
+        data = {"email": auth_user.email + "stuff", "name": auth_user.name + "stuff"}
+
+        response = self.api_client.put(self.url, data=data)
+
+        auth_user.refresh_from_db()
+        assert response.status_code == status.HTTP_200_OK
+        assert_json_contains_model_instance_data(data, auth_user)
+
+    def test_PATCH_does_partial_update_of_currently_logged_in_user(self, auth_user: User) -> None:
+        data = {"name": auth_user.name + "stuff"}
+
+        response = self.api_client.patch(self.url, data=data)
+
+        auth_user.refresh_from_db()
+        assert response.status_code == status.HTTP_200_OK
+        assert_json_contains_model_instance_data(data, auth_user)
 
 
 class TestLoginView:

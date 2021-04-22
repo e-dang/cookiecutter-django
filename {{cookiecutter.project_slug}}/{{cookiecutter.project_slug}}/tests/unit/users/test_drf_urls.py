@@ -11,10 +11,6 @@ def test_user_list():
     assert_correct_url("api:user-list", "/api/users/")
 
 
-def test_user_me():
-    assert_correct_url("api:user-me", "/api/users/me/")
-
-
 def test_login():
     assert_correct_url("api:rest_login", "/api/login/")
 
