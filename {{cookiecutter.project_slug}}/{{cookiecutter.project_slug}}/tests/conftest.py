@@ -3,6 +3,9 @@ from pathlib import Path
 import pytest
 from pytest_factoryboy import register as factory_register
 from pytest_factoryboy.fixture import get_caller_module, get_model_name, make_fixture
+{%- if cookiecutter.use_drf == "y" %}
+from rest_framework.test import APIClient
+{%- endif %}
 
 from {{cookiecutter.project_slug}}.tests.factories import UserFactory
 
@@ -23,6 +26,21 @@ def register(factory_class, _name=None, **kwargs):
 register(UserFactory)
 
 
+@pytest.fixture(autouse=True)
+def media_storage(settings, tmpdir):
+    settings.MEDIA_ROOT = tmpdir.strpath
+
+{% if cookiecutter.use_drf == "y" %}
+@pytest.fixture
+def api_client() -> APIClient:
+    return APIClient()
+
+
+@pytest.fixture
+def test_password() -> str:
+    return "mytestpassword123"
+
+{% endif %}
 def pytest_collection_modifyitems(config, items):
     """Give tests a specific mark based on the test type directory they are in"""
 
@@ -35,8 +53,3 @@ def pytest_collection_modifyitems(config, items):
             item.add_marker("integration")
         elif "functional" in str(rel_path):
             item.add_marker("functional")
-
-
-@pytest.fixture(autouse=True)
-def media_storage(settings, tmpdir):
-    settings.MEDIA_ROOT = tmpdir.strpath

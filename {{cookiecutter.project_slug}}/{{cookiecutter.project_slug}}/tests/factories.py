@@ -1,6 +1,7 @@
 from functools import partial
 from typing import Any, Dict, Sequence
 
+from allauth.account.models import EmailAddress
 from django.contrib.auth import get_user_model
 from factory import Factory, Faker, post_generation
 from factory.base import StubObject
@@ -65,6 +66,19 @@ class UserFactory(DjangoModelFactory, JsonFactoryMixin):
             self.set_password(password)
         except AttributeError:
             self.password = password
+
+    @post_generation
+    def status(self, create: bool, extracted: dict, **kwargs):
+        if not create:
+            return
+
+        if extracted is not None:
+            EmailAddress.objects.create(
+                user=self,
+                email=self.email,
+                verified=extracted.get("verified", True),
+                primary=extracted.get("primary", True),
+            )
 
     class Meta:
         model = get_user_model()
