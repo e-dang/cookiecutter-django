@@ -339,7 +339,7 @@ REST_FRAMEWORK = {
 {% if cookiecutter.user.username_field == "email" %}
 REST_AUTH_SERIALIZERS = {
     "LOGIN_SERIALIZER": "{{cookiecutter.project_slug}}.users.api.serializers.LoginSerializer",
-    "USER_DETAILS_SERIALIZER": "my_api.users.api.serializers.UserSerializer",
+    "USER_DETAILS_SERIALIZER": "{{cookiecutter.project_slug}}.users.api.serializers.UserSerializer",
 }
 
 REST_AUTH_REGISTER_SERIALIZERS = {
