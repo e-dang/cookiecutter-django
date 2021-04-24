@@ -1,6 +1,6 @@
-from pytest_bdd import given, when, then, scenarios
-from .pages.register_page import RegisterPage
+from pytest_bdd import given, scenarios, then, when
 
+from .pages.register_page import RegisterPage
 
 scenarios("features/auth.feature")
 
