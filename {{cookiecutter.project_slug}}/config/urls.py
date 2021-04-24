@@ -16,6 +16,7 @@ urlpatterns = [
     # Django Admin, use {% raw %}{% url 'admin:index' %}{% endraw %}
     path(settings.ADMIN_URL, admin.site.urls),
     {%- if cookiecutter.use_drf == "y" %}
+    # dj_rest_auth fix #2 - https://dj-rest-auth.readthedocs.io/en/latest/faq.html
     path(
         "password-reset/confirm/<uidb64>/<token>/",
         TemplateView.as_view(template_name="password_reset_confirm.html"),
@@ -38,6 +39,14 @@ urlpatterns += [
     # API base url
     path("api/", include("config.api_router")),
 ]
+
+if "drf_spectacular" in settings.INSTALLED_APPS:
+    from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+    urlpatterns += [
+        path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
+        path("api/schema/swagger-ui/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
+    ]
 {%- endif %}
 
 if settings.DEBUG:

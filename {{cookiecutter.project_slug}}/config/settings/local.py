@@ -53,7 +53,7 @@ INSTALLED_APPS = ["whitenoise.runserver_nostatic"] + INSTALLED_APPS  # noqa F405
 # django-debug-toolbar
 # ------------------------------------------------------------------------------
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#prerequisites
-INSTALLED_APPS += ["debug_toolbar"]  # noqa F405
+INSTALLED_APPS += ["debug_toolbar"{% if cookiecutter.use_drf == "y" -%}, "drf_spectacular"{%- endif %}]  # noqa F405
 # https://django-debug-toolbar.readthedocs.io/en/latest/installation.html#middleware
 MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]  # noqa F405
 # https://django-debug-toolbar.readthedocs.io/en/latest/configuration.html#debug-toolbar-config
@@ -94,6 +94,14 @@ CELERY_TASK_ALWAYS_EAGER = True
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-eager-propagates
 CELERY_TASK_EAGER_PROPAGATES = True
 
+{%- endif %}
+{% if cookiecutter.use_drf == "y" -%}
+REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema" # noqa F405
+
+# https://drf-spectacular.readthedocs.io/en/latest/index.html
+SPECTACULAR_DEFAULTS = {
+    "COMPONENT_SPLIT_REQUEST": True,
+}
 {%- endif %}
 # Your stuff...
 # ------------------------------------------------------------------------------
