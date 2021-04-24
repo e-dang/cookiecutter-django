@@ -25,11 +25,11 @@ build-prod:
 	@cd $(PROJECT_DIR) && \
 	$(PRODUCTION) build
 
-local-up:
+local-up: staging-down
 	@cd $(PROJECT_DIR) && \
 	$(LOCAL) up
 
-staging-up:
+staging-up: local-down
 	@cd $(PROJECT_DIR) && \
 	$(STAGING) up
 
@@ -55,15 +55,15 @@ prod-down:
 
 down: client-down staging-down local-down prod-down
 
-test-u: check-and-build-client
+test-u: check-and-build-client staging-down
 	@cd $(PROJECT_DIR) && \
 	$(LOCAL) $(RUN) pytest -m unit
 
-test-i: check-and-build-client
+test-i: check-and-build-client staging-down
 	@cd $(PROJECT_DIR) && \
 	$(LOCAL) $(RUN) pytest -m integration
 
-test-local: check-and-build-client
+test-local: check-and-build-client staging-down
 	@cd $(PROJECT_DIR) && \
 	$(LOCAL) $(RUN) /bin/bash -c "pytest -m unit && pytest -m integration"
 
@@ -74,7 +74,7 @@ test-f: local-down
 
 test: test-local test-f
 
-coverage:
+coverage: check-and-build-client staging-down
 	@cd $(PROJECT_DIR) && \
 	$(LOCAL) $(RUN) /bin/bash -c "coverage run -m pytest -m \"unit or integration\" && coverage report -m"
 
@@ -88,6 +88,6 @@ client:
 
 check-and-build-client:
 	@cd $(PROJECT_DIR) && \
-	if [[ ! -d swagger_client ]]; then \
-		make client \
+	if [ ! -d "swagger_client" ]; then \
+		make client; \
 	fi
