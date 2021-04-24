@@ -43,4 +43,4 @@ services:
 networks:
   default:
     external:
-      name: {{ cookiecutter.project_slug }}_local
+      name: {{ cookiecutter.project_slug }}_staging

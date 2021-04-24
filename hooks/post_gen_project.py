@@ -57,6 +57,7 @@ def remove_docker_files():
     shutil.rmtree("compose")
     shutil.rmtree(".envs/.client")
     shutil.rmtree(".envs/.staging")
+    shutil.rmtree("./compose/staging")
 
     file_names = [
         "local.yml",
@@ -271,16 +272,24 @@ def append_to_gitignore_file(s):
 
 def set_flags_in_envs(postgres_user, celery_flower_user, debug=False):
     local_django_envs_path = os.path.join(".envs", ".local", ".django")
+    staging_django_envs_path = os.path.join(".envs", ".staging", ".django")
     production_django_envs_path = os.path.join(".envs", ".production", ".django")
     local_postgres_envs_path = os.path.join(".envs", ".local", ".postgres")
+    staging_postgres_envs_path = os.path.join(".envs", ".staging", ".postgres")
     production_postgres_envs_path = os.path.join(".envs", ".production", ".postgres")
 
     set_django_secret_key(production_django_envs_path)
     set_django_admin_url(production_django_envs_path)
+    set_django_secret_key(staging_django_envs_path)
+    set_django_admin_url(staging_django_envs_path)
 
     set_postgres_user(local_postgres_envs_path, value=postgres_user)
     set_postgres_password(
         local_postgres_envs_path, value=DEBUG_VALUE if debug else None
+    )
+    set_postgres_user(staging_postgres_envs_path, value=postgres_user)
+    set_postgres_password(
+        staging_postgres_envs_path, value=DEBUG_VALUE if debug else None
     )
     set_postgres_user(production_postgres_envs_path, value=postgres_user)
     set_postgres_password(
@@ -290,6 +299,10 @@ def set_flags_in_envs(postgres_user, celery_flower_user, debug=False):
     set_celery_flower_user(local_django_envs_path, value=celery_flower_user)
     set_celery_flower_password(
         local_django_envs_path, value=DEBUG_VALUE if debug else None
+    )
+    set_celery_flower_user(staging_django_envs_path, value=celery_flower_user)
+    set_celery_flower_password(
+        staging_django_envs_path, value=DEBUG_VALUE if debug else None
     )
     set_celery_flower_user(production_django_envs_path, value=celery_flower_user)
     set_celery_flower_password(
@@ -400,8 +413,6 @@ def main():
 
     if "{{ cookiecutter.use_docker }}".lower() == "y":
         remove_utility_files()
-        append_to_gitignore_file("!.envs/.client/")
-        append_to_gitignore_file("!.envs/.staging/")
     else:
         remove_docker_files()
 
@@ -432,6 +443,9 @@ def main():
         append_to_gitignore_file(".envs/*")
         if "{{ cookiecutter.keep_local_envs_in_vcs }}".lower() == "y":
             append_to_gitignore_file("!.envs/.local/")
+        if "{{ cookiecutter.use_docker }}".lower() == "y":
+            append_to_gitignore_file("!.envs/.client/")
+            append_to_gitignore_file("!.envs/.staging/")
 
     if "{{ cookiecutter.js_task_runner}}".lower() == "none":
         remove_gulp_files()

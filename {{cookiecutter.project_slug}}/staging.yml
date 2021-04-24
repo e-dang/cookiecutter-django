@@ -21,17 +21,22 @@ services:
       - ./.envs/.staging/.postgres
     ports:
       - '5000:5000'
+    environment:
+      - VIRTUAL_HOST={{cookiecutter.local_https_domain_name}}
+      - VIRTUAL_PORT=5000
     command: /start
 
   nginx-proxy:
-    image: jwilder/nginx-proxy:alpine
-    container_name: my-dev-env.local
+    build:
+      context: .
+      dockerfile: ./compose/staging/nginx/Dockerfile
+    image: nginx_proxy_staging
+    container_name: {{cookiecutter.local_https_domain_name}}
     ports:
       - '80:80'
       - '443:443'
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./certs:/etc/nginx/certs
     restart: always
     depends_on:
       - django
@@ -52,7 +57,7 @@ services:
     image: mailhog/mailhog:v1.0.0
     container_name: mailhog
     ports:
-      - '8026:8025'
+      - '8025:8025'
 
   redis:
     image: redis:5.0
@@ -60,32 +65,38 @@ services:
 
   celeryworker:
     <<: *django
-    image: {{ cookiecutter.project_slug }}_local_celeryworker
+    image: {{ cookiecutter.project_slug }}_staging_celeryworker
     container_name: celeryworker_staging
     depends_on:
       - redis
       - postgres
       - mailhog
     ports: []
+    environment:
+      - NETWORK_ACCESS=internal
     command: /start-celeryworker
 
   celerybeat:
     <<: *django
-    image: {{ cookiecutter.project_slug }}_local_celerybeat
+    image: {{ cookiecutter.project_slug }}_staging_celerybeat
     container_name: celerybeat_staging
     depends_on:
       - redis
       - postgres
       - mailhog
     ports: []
+    environment:
+      - NETWORK_ACCESS=internal
     command: /start-celerybeat
 
   flower:
     <<: *django
-    image: {{ cookiecutter.project_slug }}_local_flower
+    image: {{ cookiecutter.project_slug }}_staging_flower
     container_name: flower_staging
     ports:
-      - '5556:5555'
+      - '5555:5555'
+    environment:
+      - NETWORK_ACCESS=internal
     command: /start-flower
 
 networks:

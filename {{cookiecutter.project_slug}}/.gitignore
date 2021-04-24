@@ -333,4 +333,5 @@ MailHog
 {% if cookiecutter.use_docker == 'y' %}
 .ipython/
 certs/
+swagger_client/
 {%- endif %}
