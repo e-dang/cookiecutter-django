@@ -4,6 +4,9 @@ CLIENT := docker-compose -f client.yml
 PRODUCTION := docker-compose -f production.yml
 RUN := run --rm django
 
+setup:
+	./setup.sh
+
 build-local:
 	@cd $(PROJECT_DIR) && \
 	$(LOCAL) build

@@ -43,4 +43,4 @@ services:
 networks:
   default:
     external:
-      name: {{ cookiecutter.project_slug | replace("_", "-") }}_default
+      name: {{ cookiecutter.project_slug }}_local

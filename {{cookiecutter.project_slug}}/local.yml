@@ -25,6 +25,19 @@ services:
       - "8000:8000"
     command: /start
 
+  nginx-proxy:
+    image: jwilder/nginx-proxy:alpine
+    container_name: nginx-proxy
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./certs:/etc/nginx/certs
+    restart: always
+    depends_on:
+      - django
+
   postgres:
     build:
       context: .
@@ -123,3 +136,7 @@ services:
       - "3001:3001"
 
   {%- endif %}
+
+networks:
+  default:
+    name: {{ cookiecutter.project_slug }}_local

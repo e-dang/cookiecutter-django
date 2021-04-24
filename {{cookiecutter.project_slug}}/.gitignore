@@ -332,4 +332,5 @@ MailHog
 
 {% if cookiecutter.use_docker == 'y' %}
 .ipython/
+certs/
 {%- endif %}

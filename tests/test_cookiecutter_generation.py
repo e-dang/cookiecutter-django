@@ -20,6 +20,7 @@ def context():
         "email": "test@example.com",
         "description": "A short description of the project.",
         "domain_name": "example.com",
+        "local_https_domain_name": "example.local",
         "version": "0.1.0",
         "timezone": "UTC",
     }
