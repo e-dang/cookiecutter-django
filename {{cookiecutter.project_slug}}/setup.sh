@@ -7,7 +7,10 @@ if [[ ! -d ${GIT_DIR} ]]; then
     git init
 fi
 
-if [[ ! -f ${PRE_COMMIT_FILE} ]]; then
+if ! command -v pre-commit; then
+    echo "Please install pre-commit to continue..."
+    exit 1
+elif [[ ! -f ${PRE_COMMIT_FILE} ]]; then
     echo "Installing pre-commit into git repo hooks..."
     pre-commit install
 fi
@@ -16,7 +19,7 @@ fi
 if ! command -v mkcert &> /dev/null; then
     echo "Please install mkcert - https://github.com/FiloSottile/mkcert#mkcert"
     exit 1
-else
+fi
 
 
 echo "Creating CA certificates with mkcert..."
