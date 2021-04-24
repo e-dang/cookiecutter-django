@@ -67,7 +67,7 @@ test-local:
 	@cd $(PROJECT_DIR) && \
 	$(LOCAL) $(RUN) /bin/bash -c "pytest -m unit && pytest -m integration"
 
-test-f:
+test-f: local-down
 	@cd $(PROJECT_DIR); \
 	$(STAGING) up -d; \
 	$(CLIENT) run --rm client
