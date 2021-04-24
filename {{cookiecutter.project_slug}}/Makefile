@@ -55,15 +55,15 @@ prod-down:
 
 down: client-down staging-down local-down prod-down
 
-test-u:
+test-u: check-and-build-client
 	@cd $(PROJECT_DIR) && \
 	$(LOCAL) $(RUN) pytest -m unit
 
-test-i:
+test-i: check-and-build-client
 	@cd $(PROJECT_DIR) && \
 	$(LOCAL) $(RUN) pytest -m integration
 
-test-local:
+test-local: check-and-build-client
 	@cd $(PROJECT_DIR) && \
 	$(LOCAL) $(RUN) /bin/bash -c "pytest -m unit && pytest -m integration"
 
@@ -85,3 +85,9 @@ client:
 	@-rm -r $(PROJECT_DIR)/swagger_client
 	@mv $(PROJECT_DIR)/test_client/swagger_client $(PROJECT_DIR)/
 	@-rm -r $(PROJECT_DIR)/test_client
+
+check-and-build-client:
+	@cd $(PROJECT_DIR) && \
+	if [[ ! -d swagger_client ]]; then \
+		make client \
+	fi
