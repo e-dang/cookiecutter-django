@@ -10,7 +10,7 @@ def selenium_hub_url():
 
 @pytest.fixture
 def server_url():
-    return f"http://{settings.APP_HOST_NAME}:8000/"
+    return f"http://{settings.APP_HOST_NAME}"
 
 
 @pytest.fixture
