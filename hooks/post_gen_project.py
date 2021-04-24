@@ -57,7 +57,6 @@ def remove_docker_files():
     shutil.rmtree("compose")
     shutil.rmtree(".envs/.client")
     shutil.rmtree(".envs/.staging")
-    shutil.rmtree("./compose/staging")
 
     file_names = [
         "local.yml",

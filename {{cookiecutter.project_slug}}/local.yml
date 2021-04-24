@@ -23,17 +23,22 @@ services:
       - ./.envs/.local/.postgres
     ports:
       - "8000:8000"
+    environment:
+      - VIRTUAL_HOST={{cookiecutter.local_https_domain_name}}
+      - VIRTUAL_PORT=8000
     command: /start
 
   nginx-proxy:
-    image: jwilder/nginx-proxy:alpine
+    build:
+      context: .
+      dockerfile: ./compose/local/nginx/Dockerfile
+    image: nginx_proxy_local
     container_name: nginx-proxy
     ports:
       - '80:80'
       - '443:443'
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ./certs:/etc/nginx/certs
     restart: always
     depends_on:
       - django
@@ -64,6 +69,8 @@ services:
       - ./{{ cookiecutter.project_slug }}:/app/{{ cookiecutter.project_slug }}:z
     ports:
       - "7000:7000"
+    environment:
+      - NETWORK_ACCESS=internal
     command: /start-docs
   {%- if cookiecutter.use_mailhog == 'y' %}
 
@@ -91,6 +98,8 @@ services:
       - mailhog
       {%- endif %}
     ports: []
+    environment:
+      - NETWORK_ACCESS=internal
     command: /start-celeryworker
 
   celerybeat:
@@ -112,6 +121,8 @@ services:
     container_name: flower
     ports:
       - "5555:5555"
+    environment:
+      - NETWORK_ACCESS=internal
     command: /start-flower
 
   {%- endif %}
