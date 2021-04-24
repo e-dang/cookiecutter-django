@@ -164,14 +164,10 @@ class TestLogoutView:
 
 class TestRegisterView:
     @pytest.fixture(autouse=True)
-    def setup(self, api_client: APIClient, user_json: dict) -> None:
+    def setup(self, api_client: APIClient, valid_registration_info: dict) -> None:
         self.api_client = api_client
         self.url = reverse("api:rest_register")
-        self.data = user_json
-        self.data["password1"] = self.data["password"]
-        self.data["password2"] = self.data["password"]
-        self.data.pop("uuid")
-        self.data.pop("password")
+        self.data = valid_registration_info
 
     def test_successful_registration_creates_unverified_user(self) -> None:
         response = self.api_client.post(self.url, data=self.data)

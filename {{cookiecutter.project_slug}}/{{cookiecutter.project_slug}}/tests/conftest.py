@@ -53,3 +53,12 @@ def pytest_collection_modifyitems(config, items):
             item.add_marker("integration")
         elif "functional" in str(rel_path):
             item.add_marker("functional")
+
+
+@pytest.fixture
+def valid_registration_info(user_json: dict) -> dict:
+    user_json["password1"] = user_json["password"]
+    user_json["password2"] = user_json["password"]
+    user_json.pop("password")
+    user_json.pop("uuid")
+    return user_json
