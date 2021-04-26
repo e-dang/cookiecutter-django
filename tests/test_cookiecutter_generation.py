@@ -234,7 +234,7 @@ def test_gitlab_invokes_flake8_and_pytest(
     ["use_docker", "expected_test_script"],
     [
         ("n", "pytest"),
-        ("y", "docker-compose -f local.yml run django pytest"),
+        ("y", "make test-local"),
     ],
 )
 def test_github_invokes_linter_and_pytest(
@@ -248,6 +248,11 @@ def test_github_invokes_linter_and_pytest(
     assert result.project.basename == context["project_slug"]
     assert result.project.isdir()
 
+    if use_docker == "y":
+        key = "test-local"
+    else:
+        key = "pytest"
+
     with open(f"{result.project}/.github/workflows/ci.yml", "r") as github_yml:
         try:
             github_config = yaml.safe_load(github_yml)
@@ -258,7 +263,7 @@ def test_github_invokes_linter_and_pytest(
             assert linter_present
 
             expected_test_script_present = False
-            for action_step in github_config["jobs"]["pytest"]["steps"]:
+            for action_step in github_config["jobs"][key]["steps"]:
                 if action_step.get("run") == expected_test_script:
                     expected_test_script_present = True
             assert expected_test_script_present
