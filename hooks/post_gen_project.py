@@ -389,14 +389,6 @@ def remove_migration_file():
     )
 
 
-def remove_editor_config():
-    os.remove(os.path.join(".editorconfig"))
-
-
-def remove_pylint():
-    os.remove(os.path.join(".pylintrc"))
-
-
 def remove_storages_module():
     os.remove(os.path.join("{{cookiecutter.project_slug}}", "utils", "storages.py"))
 
@@ -491,9 +483,6 @@ def main():
 
     if "{{ cookiecutter.use_async }}".lower() == "n":
         remove_async_files()
-
-    remove_editor_config()
-    remove_pylint()
 
     print(SUCCESS + "Project initialized, keep up the good work!" + TERMINATOR)
 
