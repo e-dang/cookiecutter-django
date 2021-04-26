@@ -129,9 +129,7 @@ class RegisterSchema(OpenApiViewExtension):
             EmailVerificationMethod,
         )
 
-        from {{cookiecutter.project_slug}}.users.api.serializers import (
-            RegisterSerializer,
-        )
+        from {{cookiecutter.project_slug}}.users.api.serializers import RegisterSerializer
 
         if EMAIL_VERIFICATION == EmailVerificationMethod.MANDATORY:
             response_serializer = RestAuthDetailSerializer
