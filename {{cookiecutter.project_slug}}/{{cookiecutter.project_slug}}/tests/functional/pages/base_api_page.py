@@ -1,7 +1,6 @@
 from typing import Any, Callable
 
 import pytest
-
 import swagger_client
 from swagger_client.rest import ApiException
 
