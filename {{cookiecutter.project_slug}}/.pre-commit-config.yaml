@@ -31,4 +31,8 @@ repos:
     rev: v2.2.1
     hooks:
       - id: prettier
-        types: [javascript, yaml]
+        types_or:
+          - javascript
+          - json
+          - yaml
+          - markdown
