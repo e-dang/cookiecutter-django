@@ -35,6 +35,7 @@ jobs:
         uses: pre-commit/action@v2.0.0
 
   {%- if cookiecutter.use_docker == 'y' %}
+
   test-local:
     runs-on: ubuntu-latest
     steps:
@@ -91,6 +92,7 @@ jobs:
       - name: Run Django Tests
         run: make test-f
   {%- else %}
+
   pytest:
     runs-on: ubuntu-latest
 
