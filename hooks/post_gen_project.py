@@ -362,6 +362,7 @@ def remove_drf_starter_files():
             "test_serializers.py",
         )
     )
+    os.remove(os.path.join("config", "schemas.py"))
 
 
 def remove_custom_user_manager_file():
