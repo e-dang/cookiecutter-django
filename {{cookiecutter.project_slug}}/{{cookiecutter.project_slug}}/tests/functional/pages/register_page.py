@@ -1,6 +1,5 @@
-from django.conf import settings
-
 import swagger_client
+from django.conf import settings
 from swagger_client.rest import ApiException
 
 
