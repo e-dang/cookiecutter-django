@@ -1,4 +1,4 @@
-exclude: 'docs|node_modules|migrations|.git|.tox{{% if cookiecutter.use_drf == "y" %}}|swagger_client{{% endif %}}'
+exclude: 'docs|node_modules|migrations|.git|.tox{% if cookiecutter.use_drf == "y" %}|swagger_client{% endif %}'
 default_stages: [commit]
 fail_fast: true
 
