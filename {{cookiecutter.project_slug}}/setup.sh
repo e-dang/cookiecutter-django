@@ -23,11 +23,7 @@ fi
 
 
 echo "Creating CA certificates with mkcert..."
-mkdir ./certs
-mkcert {{cookiecutter.local_https_domain_name}}
-mv ./{{cookiecutter.local_https_domain_name}}.pem ./certs/{{cookiecutter.local_https_domain_name}}.crt
-mv ./{{cookiecutter.local_https_domain_name}}-key.pem ./certs/{{cookiecutter.local_https_domain_name}}.key
-cp "$(mkcert -CAROOT)/rootCA.pem" ./certs
+make install-certs
 
 
 echo """

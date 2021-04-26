@@ -1,59 +1,53 @@
 PROJECT_DIR := `dirname $(abspath $(MAKEFILE_LIST))`
-LOCAL := docker-compose -f local.yml
-CLIENT := docker-compose -f client.yml
-STAGING := docker-compose -f staging.yml
-PRODUCTION := docker-compose -f production.yml
+COMPOSE := docker-compose -f
 RUN := run --rm django
+MANAGE := python manage.py
+LOCAL := $(COMPOSE) local.yml
+CLIENT := $(COMPOSE) client.yml
+STAGING := $(COMPOSE) staging.yml
+PRODUCTION := $(COMPOSE) production.yml
 API_SPEC := swagger.yml
+
+ENVS := client local staging production
+BUILD := $(addprefix build-,$(ENVS))
+DOWN := $(addsuffix -down,$(ENVS))
+UP := $(addsuffix -up,$(ENVS))
+MIGRATE := $(addsuffix -migrate,$(filter-out client,$(ENVS)))
+COLLECT_STATIC := $(addsuffix -collectstatic,$(filter-out client,$(ENVS)))
 
 setup:
 	./setup.sh
 
-build-local:
+install-certs:
 	@cd $(PROJECT_DIR) && \
-	$(LOCAL) build
+	mkcert -install && \
+	mkdir ./certs && \
+	mkcert {{cookiecutter.local_https_domain_name}} && \
+	mv ./{{cookiecutter.local_https_domain_name}}.pem ./certs/{{cookiecutter.local_https_domain_name}}.crt && \
+	mv ./{{cookiecutter.local_https_domain_name}}-key.pem ./certs/{{cookiecutter.local_https_domain_name}}.key && \
+	cp "$(shell mkcert -CAROOT)/rootCA.pem" ./certs
 
-build-staging:
+$(BUILD):
 	@cd $(PROJECT_DIR) && \
-	$(STAGING) build
+	$(COMPOSE) $(subst build-,,$@).yml build
 
-build-client:
+$(DOWN):
 	@cd $(PROJECT_DIR) && \
-	$(CLIENT) build
+	$(COMPOSE) $(subst -down,.yml,$@) down
 
-build-prod:
+$(UP):
 	@cd $(PROJECT_DIR) && \
-	$(PRODUCTION) build
+	$(COMPOSE) $(subst -up,.yml,$@) up
 
-local-up:
+$(MIGRATE):
 	@cd $(PROJECT_DIR) && \
-	$(LOCAL) up
+	$(COMPOSE) $(subst -migrate,.yml,$@) $(RUN) $(MANAGE) migrate
 
-staging-up:
+$(COLLECT_STATIC):
 	@cd $(PROJECT_DIR) && \
-	$(STAGING) up
+	$(COMPOSE) $(subst -collectstatic,.yml,$@) $(RUN) $(MANAGE) collectstatic --noinput
 
-prod-up:
-	@cd $(PROJECT_DIR) && \
-	$(PRODUCTION) up
-
-local-down:
-	@cd $(PROJECT_DIR) && \
-	$(LOCAL) down
-
-staging-down:
-	@cd $(PROJECT_DIR) && \
-	$(STAGING) down
-
-client-down:
-	@cd $(PROJECT_DIR) && \
-	$(CLIENT) down
-
-prod-down:
-	@cd $(PROJECT_DIR) && \
-	$(PRODUCTION) down
-
-down: client-down staging-down local-down prod-down
+down: $(DOWN)
 
 test-u:
 	@cd $(PROJECT_DIR) && \
@@ -67,7 +61,7 @@ test-local:
 	@cd $(PROJECT_DIR) && \
 	$(LOCAL) $(RUN) /bin/bash -c "pytest -m unit && pytest -m integration"
 
-test-f: local-down
+test-f:
 	@cd $(PROJECT_DIR); \
 	$(STAGING) up -d; \
 	$(CLIENT) run --rm client
