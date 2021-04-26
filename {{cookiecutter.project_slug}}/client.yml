@@ -27,18 +27,18 @@ services:
   client:
     build:
       context: .
-      dockerfile: ./compose/local/django/Dockerfile
+      dockerfile: ./compose/client/django/Dockerfile
     image: {{ cookiecutter.project_slug }}_local_django
     container_name: client
     volumes:
       - .:/app:z
+      - /var/run/docker.sock:/var/run/docker.sock
     env_file:
       - ./.envs/.local/.django
       - ./.envs/.client/.client
     depends_on:
       - chrome
       - firefox
-    entrypoint: pytest --ds=config.settings.client -m functional
 
 networks:
   default:

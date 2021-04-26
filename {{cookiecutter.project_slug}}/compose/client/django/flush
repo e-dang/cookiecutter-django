@@ -1,0 +1,9 @@
+# Commands for flushing the database between functional tests from client container
+# Use: docker exec -i <CONTAINER> /bin/bash < ./flush
+
+source .envs/.staging/.django
+source .envs/.staging/.postgres
+
+source /entrypoint > /dev/null
+
+python manage.py flush --noinput

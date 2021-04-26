@@ -2,6 +2,6 @@
 DATABASE_URL=sqlite:///:memory:
 
 # Necessary setting to get client to load. This is not actually used by the client. We
-# want the client to lead django settings so that we can use factoryboy test factories for
+# want the client to load django settings so that we can use factoryboy test factories for
 # randomized data.
 CELERY_BROKER_URL=redis://redis:6379/0
