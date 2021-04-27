@@ -72,7 +72,7 @@ coverage:
 	@cd $(PROJECT_DIR) && \
 	$(LOCAL) $(RUN) /bin/bash -c "coverage run -m pytest -m \"unit or integration\" && coverage report -m"
 
-client:
+swagger-client:
 	@cd $(PROJECT_DIR) && \
 	$(LOCAL) $(RUN) python manage.py spectacular --file $(API_SPEC) && \
 	docker run --rm -v ${PWD}:/local swaggerapi/swagger-codegen-cli-v3 generate -i /local/$(API_SPEC) -l python -o /local/test_client
