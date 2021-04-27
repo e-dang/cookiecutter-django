@@ -13,6 +13,9 @@ class UserSettingsPage(BaseAPIPage):
 
     def assert_displays_info_for_user(self, user: dict) -> None:
         user_info = self._get_user_info()
+        {% if cookiecutter.user.username_field == "username" -%}
+        assert user_info.username == user["username"]
+        {% endif -%}
         assert user_info.email == user["email"]
         assert user_info.name == user["name"]
 

@@ -60,5 +60,7 @@ def valid_registration_info(user_json: dict) -> dict:
     user_json["password1"] = user_json["password"]
     user_json["password2"] = user_json["password"]
     user_json.pop("password")
+    {% if cookiecutter.user.slug_field == "uuid" -%}
     user_json.pop("uuid")
+    {% endif -%}
     return user_json

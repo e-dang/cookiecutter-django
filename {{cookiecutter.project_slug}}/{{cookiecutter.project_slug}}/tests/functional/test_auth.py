@@ -38,7 +38,7 @@ def auth_token(login_page: LoginPage) -> str:
 
 @pytest.fixture
 def credentials() -> dict:
-    return {"email": None, "password": None}
+    return {"{{cookiecutter.user.username_field}}": None, "password": None}
 
 
 @given("I am an unverified user", target_fixture="user")
@@ -53,7 +53,7 @@ def register_page(server_url: str, ssl_ca_cert: str) -> RegisterPage:
 
 @given("I have valid registration information", target_fixture="registration_info")
 def valid_registration_info(valid_registration_info: dict, credentials: dict) -> dict:
-    credentials["email"] = valid_registration_info["email"]
+    credentials["{{cookiecutter.user.username_field}}"] = valid_registration_info["{{cookiecutter.user.username_field}}"]
     credentials["password"] = valid_registration_info["password1"]
     return valid_registration_info
 
@@ -94,7 +94,7 @@ def verified_user_(verified_user: dict) -> dict:
 
 @given("I have valid login credentials", target_fixture="credentials")
 def valid_login_credentials(user: dict) -> None:
-    return {"email": user["email"], "password": user["password"]}
+    return {"{{cookiecutter.user.username_field}}": user["{{cookiecutter.user.username_field}}"], "password": user["password"]}
 
 
 @pytest.fixture
@@ -121,5 +121,5 @@ def logout(user_settings_page: UserSettingsPage) -> None:
 def submit_new_credentials(
     login_page: LoginPage, user_settings_page: UserSettingsPage, credentials: dict, new_password: str
 ) -> None:
-    login_page.login(credentials["email"], new_password)
+    login_page.login(credentials["{{cookiecutter.user.username_field}}"], new_password)
     user_settings_page.set_auth_token(login_page.auth_token)

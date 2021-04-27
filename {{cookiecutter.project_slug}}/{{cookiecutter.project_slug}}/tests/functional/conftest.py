@@ -30,7 +30,7 @@ def reset_database():
 @pytest.fixture
 def verified_user(user_json: dict) -> dict:
     command = build_docker_exec(
-        CLIENT_EMAIL=user_json["email"],
+        CLIENT_{{cookiecutter.user.username_field.upper()}}=user_json["{{cookiecutter.user.username_field}}"],
         CLIENT_PASSWORD=user_json["password"],
         CLIENT_NAME=user_json["name"],
         FLAGS="--verified",
