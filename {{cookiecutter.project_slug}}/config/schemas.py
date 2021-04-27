@@ -1,16 +1,18 @@
-from drf_spectacular.contrib.rest_auth import (
-    RestAuthDetailSerializer,
-    get_token_serializer_class,
-)
+from drf_spectacular.contrib.rest_auth import get_token_serializer_class
 from drf_spectacular.extensions import OpenApiViewExtension
 from drf_spectacular.utils import OpenApiExample, OpenApiResponse, extend_schema
 from rest_framework import status
+
+from {{cookiecutter.project_slug}}.core.serializers import (
+    DetailResponseSerializer,
+    NonFieldErrorResponseSerializer,
+)
 
 
 class RestAuthDefaultResponseView(OpenApiViewExtension):
     def view_replacement(self):
         class Fixed(self.target_class):
-            @extend_schema(responses=RestAuthDetailSerializer)
+            @extend_schema(responses=DetailResponseSerializer)
             def post(self, request, *args, **kwargs):
                 pass
 
@@ -28,7 +30,37 @@ class LoginSchema(OpenApiViewExtension):
             @extend_schema(
                 operation_id="login",
                 request={"application/json": LoginSerializer},
-                responses=get_token_serializer_class(),
+                responses={
+                    status.HTTP_200_OK: OpenApiResponse(
+                        get_token_serializer_class(),
+                        description="Successful login",
+                        examples=[OpenApiExample("Success", value={"key": "491484b928d4e497ef3359a789af8ac204fc96db"})],
+                    ),
+                    status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                        DetailResponseSerializer,
+                        description="Attempting to login with the Authorization header already set",
+                        examples=[
+                            OpenApiExample(
+                                "Invalid Token",
+                                value={"detail": "Invalid Token."},
+                                response_only=True,
+                                status_codes=[f"{status.HTTP_401_UNAUTHORIZED}"],
+                            )
+                        ],
+                    ),
+                    status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                        NonFieldErrorResponseSerializer,
+                        description="Invalid credentials",
+                        examples=[
+                            OpenApiExample(
+                                name="Invalid credentials",
+                                value={"non_field_errors": "Unable to log in with provided credentials"},
+                                response_only=True,
+                                status_codes=[f"{status.HTTP_400_BAD_REQUEST}"],
+                            )
+                        ],
+                    ),
+                },
                 tags=["auth"],
             )
             def post(self, request, *args, **kwargs):
@@ -45,7 +77,7 @@ class LogoutSchema(OpenApiViewExtension):
         from django.conf import settings
 
         if getattr(settings, "ACCOUNT_LOGOUT_ON_GET", None):
-            get_schema_params = {"responses": RestAuthDetailSerializer}
+            get_schema_params = {"responses": DetailResponseSerializer}
         else:
             get_schema_params = {"exclude": True}
 
@@ -54,7 +86,7 @@ class LogoutSchema(OpenApiViewExtension):
             def get(self, request, *args, **kwargs):
                 pass
 
-            @extend_schema(operation_id="logout", request=None, responses=RestAuthDetailSerializer, tags=["auth"])
+            @extend_schema(operation_id="logout", request=None, responses=DetailResponseSerializer, tags=["auth"])
             def post(self, request, *args, **kwargs):
                 pass
 
@@ -90,7 +122,7 @@ class PasswordResetSchema(OpenApiViewExtension):
                 operation_id="reset_password",
                 request={"application/json": PasswordResetSerializer},
                 responses={
-                    status.HTTP_200_OK: OpenApiResponse(RestAuthDetailSerializer, description="successful operation")
+                    status.HTTP_200_OK: OpenApiResponse(DetailResponseSerializer, description="successful operation")
                 },
                 tags=["auth"],
             )
@@ -132,7 +164,7 @@ class RegisterSchema(OpenApiViewExtension):
         from {{cookiecutter.project_slug}}.users.api.serializers import RegisterSerializer
 
         if EMAIL_VERIFICATION == EmailVerificationMethod.MANDATORY:
-            response_serializer = RestAuthDetailSerializer
+            response_serializer = DetailResponseSerializer
         else:
             response_serializer = get_token_serializer_class()
 

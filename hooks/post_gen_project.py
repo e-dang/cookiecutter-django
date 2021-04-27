@@ -333,36 +333,36 @@ def remove_aws_dockerfile():
 
 
 def remove_drf_starter_files():
-    os.remove(os.path.join("config", "api_router.py"))
     shutil.rmtree(os.path.join("{{cookiecutter.project_slug}}", "users", "api"))
-    os.remove(
+
+    paths = [
+        os.path.join("config", "api_router.py"),
         os.path.join(
             "{{cookiecutter.project_slug}}",
             "tests",
             "unit",
             "users",
             "test_drf_urls.py",
-        )
-    )
-    os.remove(
+        ),
         os.path.join(
             "{{cookiecutter.project_slug}}",
             "tests",
             "integration",
             "users",
             "test_drf_views.py",
-        )
-    )
-    os.remove(
+        ),
         os.path.join(
             "{{cookiecutter.project_slug}}",
             "tests",
             "integration",
             "users",
             "test_serializers.py",
-        )
-    )
-    os.remove(os.path.join("config", "schemas.py"))
+        ),
+        os.path.join("config", "schemas.py"),
+        os.path.join("{{cookiecutter.project_slug}}", "core", "serializers.py"),
+    ]
+    for path in paths:
+        os.remove(path)
 
 
 def remove_custom_user_manager_file():
