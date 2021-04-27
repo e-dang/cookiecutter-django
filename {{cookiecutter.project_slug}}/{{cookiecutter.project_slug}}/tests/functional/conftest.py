@@ -55,7 +55,7 @@ def server_url():
 
 
 @pytest.fixture
-def web_driver(selenium_hub_url):
+def web_client(selenium_hub_url):
     caps = {"browserName": settings.BROWSER, "acceptInsecureCerts": True}
     driver = webdriver.Remote(command_executor=selenium_hub_url, desired_capabilities=caps)
 

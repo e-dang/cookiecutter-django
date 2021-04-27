@@ -17,8 +17,8 @@ def smtp_server() -> SMTPServer:
 
 
 @pytest.fixture
-def inbox_page(web_driver: WebDriver, smtp_server: SMTPServer) -> InboxPage:
-    return InboxPage(web_driver, smtp_server)
+def inbox_page(web_client: WebDriver, smtp_server: SMTPServer) -> InboxPage:
+    return InboxPage(web_client, smtp_server)
 
 
 @pytest.fixture
