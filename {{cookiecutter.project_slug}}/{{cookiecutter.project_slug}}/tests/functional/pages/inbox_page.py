@@ -4,7 +4,7 @@ import requests
 from rest_framework import status
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from my_awesome_project.tests.utils import parse_url
+from {{cookiecutter.project_slug}}.tests.utils import parse_url
 
 
 class SMTPServer:
