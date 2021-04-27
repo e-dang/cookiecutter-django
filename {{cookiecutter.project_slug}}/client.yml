@@ -28,7 +28,7 @@ services:
     build:
       context: .
       dockerfile: ./compose/client/django/Dockerfile
-    image: {{ cookiecutter.project_slug }}_local_django
+    image: {{ cookiecutter.project_slug }}_client
     container_name: client
     volumes:
       - .:/app:z

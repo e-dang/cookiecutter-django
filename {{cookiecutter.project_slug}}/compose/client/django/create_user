@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Commands for flushing the database between functional tests from client container
-# Use: docker exec -i <CONTAINER> /bin/bash < /flush
+# Use: docker exec -e <ENV_VARS> -i <CONTAINER> /bin/bash < /create_user
 
 set -o errexit
 set -o pipefail
@@ -9,4 +9,4 @@ set -o nounset
 
 source /app/compose/client/django/_sourced/env
 
-python manage.py flush --noinput
+python manage.py create_user ${CLIENT_EMAIL} ${CLIENT_PASSWORD} "${CLIENT_NAME}" ${FLAGS}

@@ -1,15 +1,42 @@
-import os
+import subprocess
 
 import pytest
 from django.conf import settings
 from selenium import webdriver
 
 
+def build_docker_exec(**kwargs):
+    env_vars = []
+    for key, item in kwargs.items():
+        env_vars.append("-e")
+        env_vars.append(f"{key}={item}")
+    return ["docker", "exec", *env_vars, "-i", settings.APP_HOST_NAME, "/bin/bash"]
+
+
+def execute_command(command, file_path):
+    try:
+        with open(file_path, "rb") as file:
+            subprocess.run(command, stdin=file, check=True)
+    except subprocess.CalledProcessError as e:
+        pytest.fail(msg=str(e))
+
+
 @pytest.fixture(autouse=True)
 def reset_database():
-    ret = os.system(f"docker exec -i {settings.APP_HOST_NAME} /bin/bash < /flush")
-    if ret != 0:
-        pytest.fail(msg=f"Failed to flush the database. Command exited with a return code of {ret}.")
+    command = build_docker_exec()
+    execute_command(command, "/flush")
+
+
+@pytest.fixture
+def verified_user(user_json: dict) -> dict:
+    command = build_docker_exec(
+        CLIENT_EMAIL=user_json["email"],
+        CLIENT_PASSWORD=user_json["password"],
+        CLIENT_NAME=user_json["name"],
+        FLAGS="--verified",
+    )
+    execute_command(command, "/create_user")
+    return user_json
 
 
 @pytest.fixture

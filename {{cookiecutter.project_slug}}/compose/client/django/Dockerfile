@@ -74,6 +74,9 @@ RUN pip install --no-cache-dir --no-index --find-links=/wheels/ /wheels/* \
 COPY ./compose/client/django/flush /flush
 RUN sed -i 's/\r$//g' /flush
 
+COPY ./compose/client/django/create_user /create_user
+RUN sed -i 's/\r$//g' /create_user
+
 # copy application code to WORKDIR
 COPY . ${APP_HOME}
 
