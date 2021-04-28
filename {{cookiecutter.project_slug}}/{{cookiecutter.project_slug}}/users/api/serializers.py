@@ -1,9 +1,13 @@
+from allauth.account.forms import ResetPasswordForm
 {% if cookiecutter.user.username_field == "email" -%}
 from dj_rest_auth.registration.serializers import (
     RegisterSerializer as RestAuthRegisterSerializer,
 )
 from dj_rest_auth.serializers import LoginSerializer as RestAuthLoginSerializer
 {% endif -%}
+from dj_rest_auth.serializers import (
+    PasswordResetSerializer as RestAuthPasswordResetSerializer,
+)
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
@@ -42,3 +46,7 @@ class RegisterSerializer(RestAuthRegisterSerializer):
         user.name = cleaned_data["name"]
         user.save()
 {% endif %}
+
+
+class PasswordResetSerializer(RestAuthPasswordResetSerializer):
+    password_reset_form_class = ResetPasswordForm

@@ -341,6 +341,7 @@ REST_FRAMEWORK = {
 REST_AUTH_SERIALIZERS = {
     "LOGIN_SERIALIZER": "{{cookiecutter.project_slug}}.users.api.serializers.LoginSerializer",
     "USER_DETAILS_SERIALIZER": "{{cookiecutter.project_slug}}.users.api.serializers.UserSerializer",
+    "PASSWORD_RESET_SERIALIZER": "{{cookiecutter.project_slug}}.users.api.serializers.PasswordResetSerializer",
 }
 
 REST_AUTH_REGISTER_SERIALIZERS = {
