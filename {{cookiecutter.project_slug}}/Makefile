@@ -35,6 +35,10 @@ $(DOWN):
 	@cd $(PROJECT_DIR) && \
 	$(COMPOSE) $(subst -down,.yml,$@) down
 
+$(STOP):
+	@cd $(PROJECT_DIR) && \
+	$(COMPOSE) $(subst -stop,.yml,$@) stop
+
 $(UP):
 	@cd $(PROJECT_DIR) && \
 	$(COMPOSE) $(subst -up,.yml,$@) up
@@ -48,6 +52,8 @@ $(COLLECT_STATIC):
 	$(COMPOSE) $(subst -collectstatic,.yml,$@) $(RUN) $(MANAGE) collectstatic --noinput
 
 down: $(DOWN)
+
+stop: $(STOP)
 
 test-u:
 	@cd $(PROJECT_DIR) && \
