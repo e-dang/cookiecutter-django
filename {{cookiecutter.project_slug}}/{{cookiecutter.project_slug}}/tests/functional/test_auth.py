@@ -5,6 +5,8 @@ from selenium.webdriver.remote.webdriver import WebDriver
 
 from .pages.inbox_page import InboxPage, MailHogServer, SMTPServer
 from .pages.login_page import LoginPage
+from .pages.password_reset_confirm_page import PasswordResetConfirmPage
+from .pages.password_reset_page import PasswordResetPage
 from .pages.register_page import RegisterPage
 from .pages.user_settings_page import UserSettingsPage
 
@@ -38,7 +40,12 @@ def auth_token(login_page: LoginPage) -> str:
 
 @pytest.fixture
 def credentials() -> dict:
-    return {"{{cookiecutter.user.username_field}}": None, "password": None}
+    return {"email": None, "password": None}
+
+
+@pytest.fixture
+def password_reset_confim_page(web_client: WebDriver) -> PasswordResetConfirmPage:
+    return PasswordResetConfirmPage(web_client)
 
 
 @given("I am an unverified user", target_fixture="user")
@@ -53,7 +60,7 @@ def register_page(server_url: str, ssl_ca_cert: str) -> RegisterPage:
 
 @given("I have valid registration information", target_fixture="registration_info")
 def valid_registration_info(valid_registration_info: dict, credentials: dict) -> dict:
-    credentials["{{cookiecutter.user.username_field}}"] = valid_registration_info["{{cookiecutter.user.username_field}}"]
+    credentials["email"] = valid_registration_info["email"]
     credentials["password"] = valid_registration_info["password1"]
     return valid_registration_info
 
@@ -94,7 +101,7 @@ def verified_user_(verified_user: dict) -> dict:
 
 @given("I have valid login credentials", target_fixture="credentials")
 def valid_login_credentials(user: dict) -> None:
-    return {"{{cookiecutter.user.username_field}}": user["{{cookiecutter.user.username_field}}"], "password": user["password"]}
+    return {"email": user["email"], "password": user["password"]}
 
 
 @pytest.fixture
@@ -121,5 +128,35 @@ def logout(user_settings_page: UserSettingsPage) -> None:
 def submit_new_credentials(
     login_page: LoginPage, user_settings_page: UserSettingsPage, credentials: dict, new_password: str
 ) -> None:
-    login_page.login(credentials["{{cookiecutter.user.username_field}}"], new_password)
+    login_page.login(credentials["email"], new_password)
     user_settings_page.set_auth_token(login_page.auth_token)
+
+
+################################################################################################
+
+
+@given("I am a verified user", target_fixture="user")
+def verified_user__(verified_user: dict, credentials: dict) -> dict:
+    credentials["email"] = verified_user["email"]
+    credentials["password"] = verified_user["password"]
+    return verified_user
+
+
+@given("I am on the password reset page", target_fixture="password_reset_page")
+def password_reset_page(server_url: str, ssl_ca_cert: str) -> PasswordResetPage:
+    return PasswordResetPage(server_url, ssl_ca_cert=ssl_ca_cert)
+
+
+@when("I submit a request to reset my password")
+def submit_request_to_reset_password(password_reset_page: PasswordResetPage, user: dict) -> None:
+    password_reset_page.request_password_reset(user["email"])
+
+
+@when("I follow the link to reset my password")
+def follow_password_reset_link(inbox_page: InboxPage, user: dict) -> None:
+    inbox_page.go_to_password_reset_confirm_page(user["email"])
+
+
+@when("I submit my new password")
+def submit_new_password(password_reset_confim_page: PasswordResetConfirmPage, new_password: str) -> None:
+    password_reset_confim_page.change_password(new_password)

@@ -24,7 +24,12 @@ class UserSerializer(serializers.ModelSerializer):
                 "lookup_field": "{{cookiecutter.user.slug_field}}",
             }
         }
-{% if cookiecutter.user.username_field == "email" %}
+
+
+class PasswordResetSerializer(RestAuthPasswordResetSerializer):
+    password_reset_form_class = ResetPasswordForm
+{%- if cookiecutter.user.username_field == "email" %}
+
 
 class LoginSerializer(RestAuthLoginSerializer):
     username = None
@@ -45,8 +50,5 @@ class RegisterSerializer(RestAuthRegisterSerializer):
         cleaned_data = self.get_cleaned_data()
         user.name = cleaned_data["name"]
         user.save()
-{% endif %}
 
-
-class PasswordResetSerializer(RestAuthPasswordResetSerializer):
-    password_reset_form_class = ResetPasswordForm
+{%- endif %}

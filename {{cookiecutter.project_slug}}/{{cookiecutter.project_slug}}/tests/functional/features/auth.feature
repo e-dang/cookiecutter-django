@@ -24,3 +24,13 @@ Feature: Authentication flow
         And I go to the login page
         And I submit my new credentials
         Then I am successfully logged in
+
+    Scenario: A verified user forgot their password, resets it, and logs in using their new password
+        Given I am a verified user
+        And I am on the password reset page
+        When I submit a request to reset my password
+        And I follow the link to reset my password
+        And I submit my new password
+        And I go to the login page
+        And I submit my new credentials
+        Then I am successfully logged in

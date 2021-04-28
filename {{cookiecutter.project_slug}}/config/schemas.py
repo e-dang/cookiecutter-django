@@ -43,7 +43,6 @@ class LoginSchema(OpenApiViewExtension):
                             OpenApiExample(
                                 "Invalid Token",
                                 value={"detail": "Invalid Token."},
-                                response_only=True,
                                 status_codes=[f"{status.HTTP_401_UNAUTHORIZED}"],
                             )
                         ],
@@ -53,9 +52,8 @@ class LoginSchema(OpenApiViewExtension):
                         description="Invalid credentials",
                         examples=[
                             OpenApiExample(
-                                name="Invalid credentials",
+                                "Invalid credentials",
                                 value={"non_field_errors": "Unable to log in with provided credentials"},
-                                response_only=True,
                                 status_codes=[f"{status.HTTP_400_BAD_REQUEST}"],
                             )
                         ],
@@ -86,7 +84,29 @@ class LogoutSchema(OpenApiViewExtension):
             def get(self, request, *args, **kwargs):
                 pass
 
-            @extend_schema(operation_id="logout", request=None, responses=DetailResponseSerializer, tags=["auth"])
+            @extend_schema(
+                operation_id="logout",
+                request=None,
+                responses={
+                    status.HTTP_200_OK: OpenApiResponse(
+                        DetailResponseSerializer,
+                        description="Success",
+                        examples=[OpenApiExample("Success", value={"detail": "Successfully logged out."})],
+                    ),
+                    status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                        DetailResponseSerializer,
+                        description="Invalid token header",
+                        examples=[
+                            OpenApiExample(
+                                "No token",
+                                value={"detail": "Invalid token header. No credentials provided."},
+                                status_codes=[f"{status.HTTP_401_UNAUTHORIZED}"],
+                            )
+                        ],
+                    ),
+                },
+                tags=["auth"],
+            )
             def post(self, request, *args, **kwargs):
                 pass
 
@@ -115,14 +135,29 @@ class PasswordResetSchema(OpenApiViewExtension):
     priority = 1
 
     def view_replacement(self):
-        from dj_rest_auth.serializers import PasswordResetSerializer
+        from {{cookiecutter.project_slug}}.users.api.serializers import PasswordResetSerializer
 
         class Fixed(self.target_class):
             @extend_schema(
                 operation_id="reset_password",
                 request={"application/json": PasswordResetSerializer},
                 responses={
-                    status.HTTP_200_OK: OpenApiResponse(DetailResponseSerializer, description="successful operation")
+                    status.HTTP_200_OK: OpenApiResponse(
+                        DetailResponseSerializer,
+                        description="Success",
+                        examples=[OpenApiExample("Success", value={"detail": "Password reset e-mail has been sent."})],
+                    ),
+                    status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                        DetailResponseSerializer,
+                        description="Attempting to reset password with the Authorization header already set",
+                        examples=[
+                            OpenApiExample(
+                                "Invalid token",
+                                value={"detail": "Invalid token."},
+                                status_codes=[f"{status.HTTP_401_UNAUTHORIZED}"],
+                            )
+                        ],
+                    ),
                 },
                 tags=["auth"],
             )
