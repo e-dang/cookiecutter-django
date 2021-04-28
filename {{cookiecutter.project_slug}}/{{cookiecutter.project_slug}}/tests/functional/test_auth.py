@@ -3,12 +3,16 @@ from django.conf import settings
 from pytest_bdd import given, scenarios, then, when
 from selenium.webdriver.remote.webdriver import WebDriver
 
-from .pages.inbox_page import InboxPage, MailHogServer, SMTPServer
-from .pages.login_page import LoginPage
-from .pages.password_reset_confirm_page import PasswordResetConfirmPage
-from .pages.password_reset_page import PasswordResetPage
-from .pages.register_page import RegisterPage
-from .pages.user_settings_page import UserSettingsPage
+from .pages import (
+    InboxPage,
+    LoginPage,
+    MailHogServer,
+    PasswordResetConfirmPage,
+    PasswordResetPage,
+    RegisterPage,
+    SMTPServer,
+    UserSettingsPage,
+)
 
 scenarios("features/auth.feature")
 
