@@ -28,6 +28,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 class PasswordResetSerializer(RestAuthPasswordResetSerializer):
     password_reset_form_class = ResetPasswordForm
+
+    def validate_email(self, value):
+        self.reset_form = self.password_reset_form_class(data=self.initial_data)
+        if not self.reset_form.is_valid():
+            raise serializers.ValidationError(self.reset_form.errors["email"])
+
+        return value
 {%- if cookiecutter.user.username_field == "email" %}
 
 

@@ -147,6 +147,17 @@ class PasswordResetSchema(OpenApiViewExtension):
                         description="Success",
                         examples=[OpenApiExample("Success", value={"detail": "Password reset e-mail has been sent."})],
                     ),
+                    status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                        PasswordResetSerializer,
+                        description="Invalid POST data",
+                        examples=[
+                            OpenApiExample(
+                                "User with email doesn't exist",
+                                value={"email": "The e-mail address is not assigned to any user account"},
+                                status_codes=[f"{status.HTTP_400_BAD_REQUEST}"],
+                            )
+                        ],
+                    ),
                     status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
                         DetailResponseSerializer,
                         description="Attempting to reset password with the Authorization header already set",
