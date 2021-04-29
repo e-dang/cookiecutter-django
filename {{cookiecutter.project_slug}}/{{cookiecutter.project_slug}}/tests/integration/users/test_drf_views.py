@@ -74,7 +74,7 @@ class TestUserView:
         assert_json_contains_model_instance_data(data, auth_user)
 
     def test_PUT_updates_user_info_of_currently_logged_in_user(self, auth_user: User) -> None:
-        data = {"email": auth_user.email + "stuff", "name": auth_user.name + "stuff"}
+        data = {"name": auth_user.name + "stuff"}
 
         response = self.api_client.put(self.url, data=data)
 

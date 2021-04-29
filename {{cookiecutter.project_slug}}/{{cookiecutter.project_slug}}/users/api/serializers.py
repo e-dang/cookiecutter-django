@@ -14,14 +14,15 @@ from rest_framework import serializers
 User = get_user_model()
 
 
-class UserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ["{{cookiecutter.user.username_field}}", "name", "url"]
+        fields = ["url", "uuid", "email", "name"]
+        read_only_fields = ["uuid", "email"]
         extra_kwargs = {
             "url": {
                 "view_name": "api:v1:user-detail",
-                "lookup_field": "{{cookiecutter.user.slug_field}}",
+                "lookup_field": "uuid",
             }
         }
 

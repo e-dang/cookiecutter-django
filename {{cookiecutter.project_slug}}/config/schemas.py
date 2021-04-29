@@ -9,16 +9,6 @@ from {{cookiecutter.project_slug}}.core.serializers import (
 )
 
 
-class RestAuthDefaultResponseView(OpenApiViewExtension):
-    def view_replacement(self):
-        class Fixed(self.target_class):
-            @extend_schema(responses=DetailResponseSerializer)
-            def post(self, request, *args, **kwargs):
-                pass
-
-        return Fixed
-
-
 class LoginSchema(OpenApiViewExtension):
     target_class = "dj_rest_auth.views.LoginView"
     priority = 1
@@ -34,27 +24,34 @@ class LoginSchema(OpenApiViewExtension):
                     status.HTTP_200_OK: OpenApiResponse(
                         get_token_serializer_class(),
                         description="Successful login",
-                        examples=[OpenApiExample("Success", value={"key": "491484b928d4e497ef3359a789af8ac204fc96db"})],
-                    ),
-                    status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
-                        DetailResponseSerializer,
-                        description="Attempting to login with the Authorization header already set",
                         examples=[
                             OpenApiExample(
-                                "Invalid Token",
-                                value={"detail": "Invalid Token."},
-                                status_codes=[f"{status.HTTP_401_UNAUTHORIZED}"],
+                                "Success",
+                                value={"key": "491484b928d4e497ef3359a789af8ac204fc96db"},
+                                status_codes=[f"{status.HTTP_200_OK}"],
                             )
                         ],
                     ),
                     status.HTTP_400_BAD_REQUEST: OpenApiResponse(
                         NonFieldErrorResponseSerializer,
-                        description="Invalid credentials",
+                        description="Invalid input",
                         examples=[
                             OpenApiExample(
                                 "Invalid credentials",
                                 value={"non_field_errors": "Unable to log in with provided credentials"},
                                 status_codes=[f"{status.HTTP_400_BAD_REQUEST}"],
+                            )
+                        ],
+                    ),
+                    status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                        DetailResponseSerializer,
+                        description="Unauthorized",
+                        examples=[
+                            OpenApiExample(
+                                "Invalid auth header",
+                                description="Attempting to login with the Authorization header already set",
+                                value={"detail": "Invalid Token."},
+                                status_codes=[f"{status.HTTP_401_UNAUTHORIZED}"],
                             )
                         ],
                     ),
@@ -91,11 +88,17 @@ class LogoutSchema(OpenApiViewExtension):
                     status.HTTP_200_OK: OpenApiResponse(
                         DetailResponseSerializer,
                         description="Success",
-                        examples=[OpenApiExample("Success", value={"detail": "Successfully logged out."})],
+                        examples=[
+                            OpenApiExample(
+                                "Success",
+                                value={"detail": "Successfully logged out."},
+                                status_codes=[f"{status.HTTP_200_OK}"],
+                            )
+                        ],
                     ),
                     status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
                         DetailResponseSerializer,
-                        description="Invalid token header",
+                        description="Unauthorized",
                         examples=[
                             OpenApiExample(
                                 "No token",
@@ -122,7 +125,45 @@ class PasswordChangeSchema(OpenApiViewExtension):
 
         class Fixed(self.target_class):
             @extend_schema(
-                operation_id="change_password", request={"application/json": PasswordChangeSerializer}, tags=["auth"]
+                operation_id="change_password",
+                request={"application/json": PasswordChangeSerializer},
+                responses={
+                    status.HTTP_200_OK: OpenApiResponse(
+                        DetailResponseSerializer,
+                        description="Success",
+                        examples=[
+                            OpenApiExample(
+                                "Successful password change",
+                                value={"detail": "New password has been saved."},
+                                status_codes=[f"{status.HTTP_200_OK}"],
+                            )
+                        ],
+                    ),
+                    status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                        PasswordChangeSerializer,
+                        description="Invalid input",
+                        examples=[
+                            OpenApiExample(
+                                "Password too common",
+                                value={"new_password2": "This password is too common."},
+                                status_codes=[f"{status.HTTP_400_BAD_REQUEST}"],
+                            )
+                        ],
+                    ),
+                    status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                        DetailResponseSerializer,
+                        description="Unauthorized",
+                        examples=[
+                            OpenApiExample(
+                                "No token",
+                                description="Invalid or missing Authorization header",
+                                value={"detail": "Authentication credentials were not provided."},
+                                status_codes=[f"{status.HTTP_401_UNAUTHORIZED}"],
+                            )
+                        ],
+                    ),
+                },
+                tags=["auth"],
             )
             def post(self, request, *args, **kwargs):
                 pass
@@ -145,11 +186,17 @@ class PasswordResetSchema(OpenApiViewExtension):
                     status.HTTP_200_OK: OpenApiResponse(
                         DetailResponseSerializer,
                         description="Success",
-                        examples=[OpenApiExample("Success", value={"detail": "Password reset e-mail has been sent."})],
+                        examples=[
+                            OpenApiExample(
+                                "Success",
+                                value={"detail": "Password reset e-mail has been sent."},
+                                status_codes=[f"{status.HTTP_200_OK}"],
+                            )
+                        ],
                     ),
                     status.HTTP_400_BAD_REQUEST: OpenApiResponse(
                         PasswordResetSerializer,
-                        description="Invalid POST data",
+                        description="Invalid input",
                         examples=[
                             OpenApiExample(
                                 "User with email doesn't exist",
@@ -160,10 +207,11 @@ class PasswordResetSchema(OpenApiViewExtension):
                     ),
                     status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
                         DetailResponseSerializer,
-                        description="Attempting to reset password with the Authorization header already set",
+                        description="Unauthorized",
                         examples=[
                             OpenApiExample(
-                                "Invalid token",
+                                "Invalid auth header",
+                                description="Attempting to reset password with the Authorization header already set",
                                 value={"detail": "Invalid token."},
                                 status_codes=[f"{status.HTTP_401_UNAUTHORIZED}"],
                             )
@@ -189,6 +237,29 @@ class PasswordResetConfirmSchema(OpenApiViewExtension):
             @extend_schema(
                 operation_id="reset_password_confirm",
                 request={"application/json": PasswordResetConfirmSerializer},
+                responses={
+                    status.HTTP_200_OK: OpenApiResponse(
+                        DetailResponseSerializer,
+                        description="Success",
+                        examples=[
+                            OpenApiExample(
+                                "Successful password reset",
+                                value={"detail": "Password has been reset with the new password."},
+                            )
+                        ],
+                    ),
+                    status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                        PasswordResetConfirmSerializer,
+                        description="Invalid input",
+                        examples=[
+                            OpenApiExample(
+                                "Invalid uid",
+                                value={"uid": "Invalid value"},
+                                status_codes=[f"{status.HTTP_400_BAD_REQUEST}"],
+                            )
+                        ],
+                    ),
+                },
                 tags=["auth"],
             )
             def post(self, request, *args, **kwargs):
@@ -219,18 +290,42 @@ class RegisterSchema(OpenApiViewExtension):
                 operation_id="register",
                 request={"application/json": RegisterSerializer},
                 responses={
-                    status.HTTP_200_OK: OpenApiResponse(response_serializer, description="successful operation"),
-                    status.HTTP_400_BAD_REQUEST: OpenApiResponse(
-                        {
-                            "type": "object",
-                            "properties": {"email": {"type": "array", "items": {"type": "string"}}},
-                            "example": {"email": ["A user is already registered with this e-mail address."]},
-                        },
-                        description="unsuccessful operation",
+                    status.HTTP_200_OK: OpenApiResponse(
+                        response_serializer,
+                        description="successful operation",
                         examples=[
                             OpenApiExample(
-                                "Email field",
-                                summary="Email already in use",
+                                "Successful registration",
+                                value={"detail": "Verification e-mail sent."},
+                                status_codes=[f"{status.HTTP_200_OK}"],
+                            )
+                        ],
+                    ),
+                    status.HTTP_400_BAD_REQUEST: OpenApiResponse(
+                        RegisterSerializer,
+                        description="Invalid input",
+                        examples=[
+                            OpenApiExample(
+                                "Invalid email",
+                                value={"email": "Enter a valid email address."},
+                                status_codes=[f"{status.HTTP_400_BAD_REQUEST}"],
+                            ),
+                            OpenApiExample(
+                                "Invalid password",
+                                value={"password2": "This password is too common."},
+                                status_codes=[f"{status.HTTP_400_BAD_REQUEST}"],
+                            ),
+                        ],
+                    ),
+                    status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                        DetailResponseSerializer,
+                        description="Unauthorized",
+                        examples=[
+                            OpenApiExample(
+                                "Invalid auth header",
+                                description="Attempting to register with the Authorization header already set",
+                                value={"detail": "Invalid token."},
+                                status_codes=[f"{status.HTTP_401_UNAUTHORIZED}"],
                             )
                         ],
                     ),
@@ -252,7 +347,21 @@ class VerifyEmailSchema(OpenApiViewExtension):
 
         class Fixed(self.target_class):
             @extend_schema(
-                operation_id="verify_email", request={"application/json": VerifyEmailSerializer}, tags=["auth"]
+                operation_id="verify_email",
+                request={"application/json": VerifyEmailSerializer},
+                responses={
+                    status.HTTP_200_OK: OpenApiResponse(
+                        DetailResponseSerializer,
+                        description="Success",
+                        examples=[OpenApiExample("Successful email verification", value={"detail": "ok"})],
+                    ),
+                    status.HTTP_404_NOT_FOUND: OpenApiResponse(
+                        DetailResponseSerializer,
+                        description="Not found",
+                        examples=[OpenApiExample("Invalid key", value={"detail": "Not found."})],
+                    ),
+                },
+                tags=["auth"],
             )
             def post(self, request, *args, **kwargs):
                 pass
@@ -270,8 +379,21 @@ class UserDetailsSchema(OpenApiViewExtension):
         class Fixed(self.target_class):
             @extend_schema(
                 operation_id="get_user",
-                description="Reads the user information for the currently logged on user.",
-                responses={status.HTTP_200_OK: UserSerializer},
+                description="Returns the user information for the currently logged on user.",
+                responses={
+                    status.HTTP_200_OK: UserSerializer,
+                    status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                        DetailResponseSerializer,
+                        description="Unauthorized",
+                        examples=[
+                            OpenApiExample(
+                                "No token",
+                                value={"detail": "Invalid token."},
+                                status_codes=[f"{status.HTTP_401_UNAUTHORIZED}"],
+                            )
+                        ],
+                    ),
+                },
                 tags=["users"],
             )
             def get(self, *args, **kwargs):
@@ -281,7 +403,20 @@ class UserDetailsSchema(OpenApiViewExtension):
                 operation_id="update_user",
                 description="Updates the user information for the currently logged on user.",
                 request={"application/json": UserSerializer},
-                responses={status.HTTP_200_OK: UserSerializer},
+                responses={
+                    status.HTTP_200_OK: UserSerializer,
+                    status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                        DetailResponseSerializer,
+                        description="Unauthorized",
+                        examples=[
+                            OpenApiExample(
+                                "No token",
+                                value={"detail": "Invalid token."},
+                                status_codes=[f"{status.HTTP_401_UNAUTHORIZED}"],
+                            )
+                        ],
+                    ),
+                },
                 tags=["users"],
             )
             def put(self, *args, **kwargs):
@@ -291,7 +426,20 @@ class UserDetailsSchema(OpenApiViewExtension):
                 operation_id="partial_update_user",
                 description="Partially updates the user information for the currently logged on user.",
                 request={"application/json": UserSerializer},
-                responses={status.HTTP_200_OK: UserSerializer},
+                responses={
+                    status.HTTP_200_OK: UserSerializer,
+                    status.HTTP_401_UNAUTHORIZED: OpenApiResponse(
+                        DetailResponseSerializer,
+                        description="Unauthorized",
+                        examples=[
+                            OpenApiExample(
+                                "No token",
+                                value={"detail": "Invalid token."},
+                                status_codes=[f"{status.HTTP_401_UNAUTHORIZED}"],
+                            )
+                        ],
+                    ),
+                },
                 tags=["users"],
             )
             def patch(self, *args, **kwargs):
