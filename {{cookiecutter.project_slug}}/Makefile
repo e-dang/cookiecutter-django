@@ -7,6 +7,7 @@ CLIENT := $(COMPOSE) client.yml
 STAGING := $(COMPOSE) staging.yml
 PRODUCTION := $(COMPOSE) production.yml
 API_SPEC := swagger.yml
+API_VERSION := v1
 
 ENVS := client local staging production
 BUILD := $(addprefix build-,$(ENVS))
@@ -80,7 +81,7 @@ coverage:
 
 swagger-client:
 	@cd $(PROJECT_DIR) && \
-	$(LOCAL) $(RUN) python manage.py spectacular --file $(API_SPEC) && \
+	$(LOCAL) $(RUN) python manage.py spectacular --file $(API_SPEC) && --api-version $(API_VERSION) \
 	docker run --rm -v ${PWD}:/local swaggerapi/swagger-codegen-cli-v3 generate -i /local/$(API_SPEC) -l python -o /local/test_client
 	@-rm -r $(PROJECT_DIR)/swagger_client
 	@mv $(PROJECT_DIR)/test_client/swagger_client $(PROJECT_DIR)/

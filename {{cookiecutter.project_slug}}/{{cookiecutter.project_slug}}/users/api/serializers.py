@@ -20,7 +20,7 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ["{{cookiecutter.user.username_field}}", "name", "url"]
         extra_kwargs = {
             "url": {
-                "view_name": "api:user-detail",
+                "view_name": "api:v1:user-detail",
                 "lookup_field": "{{cookiecutter.user.slug_field}}",
             }
         }

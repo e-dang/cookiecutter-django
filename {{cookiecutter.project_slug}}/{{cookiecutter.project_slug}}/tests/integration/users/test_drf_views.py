@@ -63,7 +63,7 @@ class TestUserView:
     @pytest.fixture(autouse=True)
     def setup(self, auth_client: APIClient) -> None:
         self.api_client = auth_client
-        self.url = reverse("api:rest_user_details")
+        self.url = reverse("api:v1:rest_user_details")
 
     def test_GET_returns_the_user_info_of_currently_logged_in_user(self, auth_user: User) -> None:
         response = self.api_client.get(self.url)
@@ -96,7 +96,7 @@ class TestLoginView:
     @pytest.fixture(autouse=True)
     def setup(self, api_client: APIClient) -> None:
         self.api_client = api_client
-        self.url = reverse("api:rest_login")
+        self.url = reverse("api:v1:rest_login")
 
     def test_successful_login_creates_token_for_user(self, verified_user: User, test_password: str) -> None:
         data = {"{{cookiecutter.user.username_field}}": verified_user.{{cookiecutter.user.username_field}}, "password": test_password}
@@ -142,7 +142,7 @@ class TestLogoutView:
     @pytest.fixture(autouse=True)
     def setup(self, auth_client: APIClient) -> None:
         self.api_client = auth_client
-        self.url = reverse("api:rest_logout")
+        self.url = reverse("api:v1:rest_logout")
 
     def test_successful_logout_deletes_token_for_user(self, auth_user: User) -> None:
         response = self.api_client.post(self.url)
@@ -166,7 +166,7 @@ class TestRegisterView:
     @pytest.fixture(autouse=True)
     def setup(self, api_client: APIClient, valid_registration_info: dict) -> None:
         self.api_client = api_client
-        self.url = reverse("api:rest_register")
+        self.url = reverse("api:v1:rest_register")
         self.data = valid_registration_info
 
     def test_successful_registration_creates_unverified_user(self) -> None:
@@ -202,7 +202,7 @@ class TestVerifyEmailView:
     @pytest.fixture(autouse=True)
     def setup(self, api_client: APIClient, verify_email: EmailAddress) -> None:
         self.api_client = api_client
-        self.url = reverse("api:rest_verify_email")
+        self.url = reverse("api:v1:rest_verify_email")
         self.email = verify_email
 
     def _parse_key(self, mailoutbox: list) -> str:
@@ -224,7 +224,7 @@ class TestPasswordChangeView:
     @pytest.fixture(autouse=True)
     def setup(self, auth_client: APIClient):
         self.api_client = auth_client
-        self.url = reverse("api:rest_password_change")
+        self.url = reverse("api:v1:rest_password_change")
 
     def test_successful_password_change_changes_user_password(self, auth_user: User, test_password: str) -> None:
         old_password = test_password
@@ -269,7 +269,7 @@ class TestPasswordResetView:
     @pytest.fixture(autouse=True)
     def setup(self, api_client: APIClient):
         self.api_client = api_client
-        self.url = reverse("api:rest_password_reset")
+        self.url = reverse("api:v1:rest_password_reset")
 
     def test_successful_password_reset_request_sends_confirmation_email(
         self, verified_user: User, mailoutbox: list
@@ -303,7 +303,7 @@ class TestPasswordResetConfirmView:
     @pytest.fixture(autouse=True)
     def setup(self, api_client: APIClient, send_reset_email: None) -> None:
         self.api_client = api_client
-        self.url = reverse("api:rest_password_reset_confirm")
+        self.url = reverse("api:v1:rest_password_reset_confirm")
 
     def _parse_uid_token(self, mailoutbox: list) -> str:
         url = parse_url(mailoutbox)

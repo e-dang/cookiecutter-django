@@ -108,9 +108,16 @@ REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema" # 
 
 # https://drf-spectacular.readthedocs.io/en/latest/index.html
 INSTALLED_APPS += ["drf_spectacular"]
-SPECTACULAR_DEFAULTS = {
-    "COMPONENT_SPLIT_REQUEST": True,
+SPECTACULAR_SETTINGS = {
+    "TITLE": "{{cookiecutter.project_name}}",
+    "DESCRIPTION": "{{cookiecutter.description}}",
+    "VERSION": "{{cookiecutter.version}}",
+    "LICENSE": {"name": "{{cookiecutter.open_source_license}}"},
+    "CONTACT": {"name": "Eric Dang", "email": "{{cookiecutter.email}}"},
+    "SCHEMA_PATH_PREFIX": r"/api/v[0-9]/",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
+
 {%- endif %}
 # Your stuff...
 # ------------------------------------------------------------------------------
