@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Setup env vars for shell created by client in staging container
+# Setup env vars for shell created by client in django container
 
-source /app/.envs/.staging/.django
-source /app/.envs/.staging/.postgres
+source /app/.envs/.${TARGET_ENV}/.django
+source /app/.envs/.${TARGET_ENV}/.postgres
 source /entrypoint > /dev/null

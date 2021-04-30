@@ -68,10 +68,15 @@ test-local:
 	@cd $(PROJECT_DIR) && \
 	$(LOCAL) $(RUN) /bin/bash -c "pytest -m unit && pytest -m integration"
 
-test-f:
+test-f-local:
+	@$(LOCAL) exec postgres backup > /dev/null
+	@TARGET_ENV=local $(CLIENT) run --rm client
+	@$(LOCAL) exec postgres restore $(shell docker-compose -f local.yml exec postgres backups | grep "backup.*\.gz" -m 1 -o) > /dev/null
+
+test-f-staging:
 	@cd $(PROJECT_DIR); \
 	$(STAGING) up -d; \
-	$(CLIENT) run --rm client
+	TARGET_ENV=staging $(CLIENT) run --rm client
 
 test: test-local test-f
 

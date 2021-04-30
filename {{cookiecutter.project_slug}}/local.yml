@@ -18,6 +18,9 @@ services:
       {%- endif %}
     volumes:
       - .:/app:z
+      {%- if cookiecutter.use_vscode == 'y' %}
+      - /var/run/docker.sock:/var/run/docker.sock
+      {%- endif %}
     env_file:
       - ./.envs/.local/.django
       - ./.envs/.local/.postgres
@@ -33,7 +36,7 @@ services:
       context: .
       dockerfile: ./compose/local/nginx/Dockerfile
     image: nginx_proxy_local
-    container_name: nginx-proxy
+    container_name: {{cookiecutter.local_https_domain_name}}
     ports:
       - '80:80'
       - '443:443'

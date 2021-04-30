@@ -36,6 +36,8 @@ services:
     env_file:
       - ./.envs/.local/.django
       - ./.envs/.client/.client
+    environment:
+      - TARGET_ENV
     depends_on:
       - chrome
       - firefox
@@ -43,4 +45,4 @@ services:
 networks:
   default:
     external:
-      name: {{ cookiecutter.project_slug }}_staging
+      name: {{ cookiecutter.project_slug }}_${TARGET_ENV}

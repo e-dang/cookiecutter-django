@@ -389,6 +389,10 @@ def remove_migration_file():
     )
 
 
+def remove_vscode_files():
+    shutil.rmtree("{{cookiecutter.project_slug}}", ".devcontainer")
+
+
 def remove_storages_module():
     os.remove(os.path.join("{{cookiecutter.project_slug}}", "utils", "storages.py"))
 
@@ -483,6 +487,9 @@ def main():
 
     if "{{ cookiecutter.use_async }}".lower() == "n":
         remove_async_files()
+
+    if "{{cookiecutter.use_vscode}}" == "n":
+        remove_vscode_files()
 
     print(SUCCESS + "Project initialized, keep up the good work!" + TERMINATOR)
 

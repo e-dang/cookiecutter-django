@@ -10,7 +10,16 @@ def build_docker_exec(**kwargs):
     for key, item in kwargs.items():
         env_vars.append("-e")
         env_vars.append(f"{key}={item}")
-    return ["docker", "exec", *env_vars, "-i", settings.APP_HOST_NAME, "/bin/bash"]
+    return [
+        "docker",
+        "exec",
+        *env_vars,
+        "-e",
+        f"TARGET_ENV={settings.TARGET_ENV}",
+        "-i",
+        settings.APP_HOST_NAME,
+        "/bin/bash",
+    ]
 
 
 def execute_command(command, file_path):

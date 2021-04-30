@@ -330,6 +330,10 @@ MailHog
 
 .pytest_cache/
 
+{% if cookiecutter.use_vscode %}
+.vscode
+{% endif %}
+
 {% if cookiecutter.use_docker == 'y' %}
 .ipython/
 certs/
