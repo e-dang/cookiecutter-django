@@ -90,7 +90,7 @@ jobs:
         run: make staging-collectstatic
 
       - name: Run Django Tests
-        run: make test-f
+        run: make test-f-staging
   {%- else %}
 
   pytest:
